@@ -1,0 +1,2020 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>五子棋挑战 - 万层地狱模式</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+            padding: 20px;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.8);
+            position: relative;
+            overflow: hidden;
+            border: 2px solid #ff4500;
+            animation: containerGlow 3s infinite alternate;
+        }
+        
+        @keyframes containerGlow {
+            0% { box-shadow: 0 0 10px rgba(255, 69, 0, 0.3); }
+            100% { box-shadow: 0 0 30px rgba(255, 69, 0, 0.7); }
+        }
+        
+        /* 背景装饰 */
+        .bg-pattern {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(255,69,0,0.05) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(255,69,0,0.05) 0%, transparent 20%);
+            z-index: -1;
+        }
+        
+        .hell-fire {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 30px;
+            background: linear-gradient(to top, rgba(255,69,0,0.8), transparent);
+            z-index: 1;
+            animation: fireAnimation 1.5s infinite alternate;
+        }
+        
+        @keyframes fireAnimation {
+            0% { opacity: 0.7; height: 30px; }
+            100% { opacity: 1; height: 40px; }
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            width: 100%;
+            position: relative;
+            z-index: 2;
+        }
+        
+        h1 {
+            color: #ffcc00;
+            font-size: 3.8rem;
+            text-shadow: 0 0 15px rgba(255, 204, 0, 0.5), 0 0 10px rgba(255, 69, 0, 0.8);
+            margin-bottom: 10px;
+            letter-spacing: 3px;
+            position: relative;
+            display: inline-block;
+            animation: titlePulse 2s infinite alternate;
+        }
+        
+        @keyframes titlePulse {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.03); }
+        }
+        
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 250px;
+            height: 5px;
+            background: linear-gradient(to right, transparent, #ff4500, #ffcc00, #ff4500, transparent);
+            border-radius: 2px;
+            animation: titleLine 3s infinite;
+        }
+        
+        @keyframes titleLine {
+            0% { background-position: -250px 0; }
+            100% { background-position: 250px 0; }
+        }
+        
+        .subtitle {
+            color: #ffcc00;
+            font-size: 1.4rem;
+            margin: 20px 0;
+            opacity: 0.9;
+            text-shadow: 0 0 5px rgba(255, 69, 0, 0.7);
+            animation: subtitleGlow 2s infinite alternate;
+        }
+        
+        @keyframes subtitleGlow {
+            0% { text-shadow: 0 0 5px rgba(255, 69, 0, 0.7); }
+            100% { text-shadow: 0 0 15px rgba(255, 69, 0, 0.9), 0 0 10px rgba(255, 204, 0, 0.7); }
+        }
+        
+        .game-wrapper {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 40px;
+            width: 100%;
+        }
+        
+        .board-container {
+            position: relative;
+            background: #e8c48a;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.7);
+            z-index: 2;
+            border: 3px solid #8b4513;
+            transition: transform 0.3s;
+            animation: boardFloat 4s infinite ease-in-out;
+        }
+        
+        @keyframes boardFloat {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+        
+        .board-container:hover {
+            transform: translateY(-5px);
+        }
+        
+        .board {
+            display: grid;
+            grid-template-columns: repeat(15, 30px);
+            grid-template-rows: repeat(15, 30px);
+            background: #e8c48a;
+            border: 3px solid #8b4513;
+            position: relative;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.3);
+        }
+        
+        .cell {
+            width: 30px;
+            height: 30px;
+            position: relative;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .cell:hover {
+            background: rgba(139, 69, 19, 0.2);
+        }
+        
+        .cell::before, .cell::after {
+            content: '';
+            position: absolute;
+            background: #8b4513;
+        }
+        
+        .cell::before {
+            width: 100%;
+            height: 1px;
+            top: 50%;
+            left: 0;
+            transform: translateY(-50%);
+        }
+        
+        .cell::after {
+            height: 100%;
+            width: 1px;
+            left: 50%;
+            top: 0;
+            transform: translateX(-50%);
+        }
+        
+        /* 棋盘上的五个点 */
+        .board-point {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: #000;
+            border-radius: 50%;
+            z-index: 1;
+            animation: pointPulse 2s infinite;
+        }
+        
+        @keyframes pointPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+        
+        .stone {
+            position: absolute;
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 2;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.5);
+            transition: transform 0.3s, box-shadow 0.3s;
+            animation: stoneAppear 0.5s ease-out;
+        }
+        
+        @keyframes stoneAppear {
+            0% { transform: translate(-50%, -50%) scale(0); }
+            70% { transform: translate(-50%, -50%) scale(1.1); }
+            100% { transform: translate(-50%, -50%) scale(1); }
+        }
+        
+        .stone.black {
+            background: radial-gradient(circle at 30% 30%, #444, #000);
+            border: 1px solid #333;
+        }
+        
+        .stone.red {
+            background: radial-gradient(circle at 30% 30%, #ff6b6b, #cc0000);
+            border: 1px solid #990000;
+        }
+        
+        .stone.last-move::after {
+            content: '';
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: #ffcc00;
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation: pulse 1s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: translate(-50%, -50%) scale(1); }
+            50% { transform: translate(-50%, -50%) scale(1.3); }
+            100% { transform: translate(-50%, -50%) scale(1); }
+        }
+        
+        .panel {
+            background: rgba(20, 20, 30, 0.8);
+            border-radius: 15px;
+            padding: 25px;
+            min-width: 320px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.7);
+            border: 1px solid rgba(255, 69, 0, 0.5);
+            z-index: 2;
+            transition: transform 0.3s;
+            animation: panelFloat 5s infinite ease-in-out;
+        }
+        
+        @keyframes panelFloat {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-5px); }
+            100% { transform: translateY(0px); }
+        }
+        
+        .panel:hover {
+            transform: translateY(-3px);
+        }
+        
+        .mode-selection {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .section-title {
+            color: #ffcc00;
+            font-size: 1.4rem;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-shadow: 0 0 5px rgba(255, 69, 0, 0.7);
+        }
+        
+        .section-title i {
+            font-size: 1.2rem;
+            animation: iconSpin 4s infinite linear;
+        }
+        
+        @keyframes iconSpin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .mode-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .mode-btn {
+            flex: 1;
+            min-width: 100px;
+            padding: 12px 10px;
+            font-size: 1rem;
+            border: none;
+            border-radius: 8px;
+            background: linear-gradient(to bottom, #444, #222);
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+            font-weight: bold;
+            letter-spacing: 1px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+            box-shadow: 0 3px 5px rgba(0, 0, 0, 0.3);
+        }
+        
+        .mode-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 8px rgba(0, 0, 0, 0.4);
+        }
+        
+        .mode-btn.active {
+            background: linear-gradient(to bottom, #ffcc00, #ff9900);
+            color: #1a1a2e;
+            box-shadow: 0 0 15px rgba(255, 204, 0, 0.5);
+            animation: buttonPulse 2s infinite;
+        }
+        
+        @keyframes buttonPulse {
+            0% { box-shadow: 0 0 10px rgba(255, 204, 0, 0.5); }
+            50% { box-shadow: 0 0 20px rgba(255, 204, 0, 0.8); }
+            100% { box-shadow: 0 0 10px rgba(255, 204, 0, 0.5); }
+        }
+        
+        .mode-btn i {
+            font-size: 1.5rem;
+        }
+        
+        .ai-difficulty {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            background: rgba(0, 0, 0, 0.4);
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 69, 0, 0.3);
+        }
+        
+        .difficulty-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        
+        .difficulty-btn {
+            flex: 1 0 calc(20% - 10px);
+            padding: 10px 5px;
+            border: none;
+            border-radius: 6px;
+            background: rgba(60, 60, 80, 0.8);
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+            font-size: 0.9rem;
+            min-width: 60px;
+            text-align: center;
+        }
+        
+        .difficulty-btn:hover {
+            background: rgba(80, 80, 100, 0.9);
+        }
+        
+        .difficulty-btn.active {
+            background: linear-gradient(to bottom, #4a86e8, #2a56b0);
+            box-shadow: 0 0 10px rgba(74, 134, 232, 0.5);
+            animation: buttonPulse 2s infinite;
+        }
+        
+        .difficulty-btn.hard {
+            background: linear-gradient(to bottom, #e84a5f, #b02a3a);
+        }
+        
+        .difficulty-btn.hard.active {
+            background: linear-gradient(to bottom, #ff6b6b, #e84a5f);
+            box-shadow: 0 0 10px rgba(232, 74, 95, 0.5);
+            animation: buttonPulse 2s infinite;
+        }
+        
+        .difficulty-btn.hell {
+            background: linear-gradient(to bottom, #8e2de2, #4a00e0);
+        }
+        
+        .difficulty-btn.hell.active {
+            background: linear-gradient(to bottom, #b06ab3, #4568dc);
+            box-shadow: 0 0 15px rgba(142, 45, 226, 0.7);
+            animation: hellGlow 2s infinite;
+        }
+        
+        @keyframes hellGlow {
+            0% { box-shadow: 0 0 10px rgba(142, 45, 226, 0.5); }
+            50% { box-shadow: 0 0 20px rgba(142, 45, 226, 0.9); }
+            100% { box-shadow: 0 0 10px rgba(142, 45, 226, 0.5); }
+        }
+        
+        .difficulty-btn.ultimatehell {
+            background: linear-gradient(to bottom, #ff0000, #8b0000);
+        }
+        
+        .difficulty-btn.ultimatehell.active {
+            background: linear-gradient(to bottom, #ff4500, #ff0000);
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.7);
+            animation: ultraHellGlow 0.8s infinite alternate;
+        }
+        
+        @keyframes ultraHellGlow {
+            0% { box-shadow: 0 0 10px rgba(255, 0, 0, 0.5); }
+            100% { box-shadow: 0 0 30px rgba(255, 69, 0, 0.9), 0 0 20px rgba(255, 165, 0, 0.7); }
+        }
+        
+        .model-selection {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 10px;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            border: 1px solid rgba(255, 69, 0, 0.3);
+        }
+        
+        .model-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .model-btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 6px;
+            background: rgba(60, 60, 80, 0.8);
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+        
+        .model-btn:hover {
+            background: rgba(80, 80, 100, 0.9);
+        }
+        
+        .model-btn.active {
+            background: linear-gradient(to bottom, #ffcc00, #ff9900);
+            box-shadow: 0 0 10px rgba(255, 204, 0, 0.5);
+            color: #1a1a2e;
+            animation: buttonPulse 2s infinite;
+        }
+        
+        .model-btn.fullpower {
+            background: linear-gradient(to bottom, #ff0000, #8b0000);
+        }
+        
+        .model-btn.fullpower.active {
+            background: linear-gradient(to bottom, #ff4500, #ff0000);
+            box-shadow: 0 0 15px rgba(255, 0, 0, 0.7);
+            animation: ultraHellGlow 0.8s infinite alternate;
+        }
+        
+        .game-info {
+            background: rgba(0, 0, 0, 0.4);
+            padding: 20px;
+            border-radius: 10px;
+            color: white;
+            border: 1px solid rgba(255, 69, 0, 0.3);
+        }
+        
+        .status {
+            font-size: 1.4rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-align: center;
+            height: 40px;
+            color: #ffcc00;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            text-shadow: 0 0 5px rgba(255, 69, 0, 0.7);
+            animation: statusPulse 3s infinite;
+        }
+        
+        @keyframes statusPulse {
+            0% { color: #ffcc00; text-shadow: 0 0 5px rgba(255, 69, 0, 0.7); }
+            50% { color: #ff9900; text-shadow: 0 0 15px rgba(255, 69, 0, 0.9); }
+            100% { color: #ffcc00; text-shadow: 0 0 5px rgba(255, 69, 0, 0.7); }
+        }
+        
+        .player-info {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 20px;
+        }
+        
+        .player {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .player-name {
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+        
+        .player-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 30px;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.4);
+            transition: transform 0.3s;
+            animation: playerIcon 4s infinite;
+        }
+        
+        @keyframes playerIcon {
+            0% { transform: rotate(0deg); }
+            25% { transform: rotate(5deg); }
+            50% { transform: rotate(0deg); }
+            75% { transform: rotate(-5deg); }
+            100% { transform: rotate(0deg); }
+        }
+        
+        .player-icon.active {
+            transform: scale(1.15);
+            box-shadow: 0 0 15px rgba(255, 204, 0, 0.7);
+            animation: activePlayer 1.5s infinite;
+        }
+        
+        @keyframes activePlayer {
+            0% { transform: scale(1.15); box-shadow: 0 0 15px rgba(255, 204, 0, 0.7); }
+            50% { transform: scale(1.2); box-shadow: 0 0 25px rgba(255, 204, 0, 0.9); }
+            100% { transform: scale(1.15); box-shadow: 0 0 15px rgba(255, 204, 0, 0.7); }
+        }
+        
+        .black-icon {
+            background: radial-gradient(circle at 30% 30%, #444, #000);
+            color: #fff;
+        }
+        
+        .red-icon {
+            background: radial-gradient(circle at 30% 30%, #ff6b6b, #cc0000);
+            color: #fff;
+        }
+        
+        .player-score {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #ffcc00;
+            animation: scoreGlow 3s infinite;
+        }
+        
+        @keyframes scoreGlow {
+            0% { text-shadow: 0 0 5px rgba(255, 204, 0, 0.5); }
+            50% { text-shadow: 0 0 15px rgba(255, 204, 0, 0.9); }
+            100% { text-shadow: 0 0 5px rgba(255, 204, 0, 0.5); }
+        }
+        
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .control-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            background: linear-gradient(to bottom, #4a86e8, #2a56b0);
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 3px 5px rgba(0, 0, 0, 0.3);
+            animation: controlBtn 5s infinite;
+        }
+        
+        @keyframes controlBtn {
+            0% { transform: translateY(0); }
+            5% { transform: translateY(-5px); }
+            10% { transform: translateY(0); }
+            100% { transform: translateY(0); }
+        }
+        
+        .control-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 8px rgba(0, 0, 0, 0.4);
+        }
+        
+        .control-btn.reset {
+            background: linear-gradient(to bottom, #ffcc00, #ff9900);
+            color: #1a1a2e;
+            animation: resetBtn 4s infinite;
+        }
+        
+        @keyframes resetBtn {
+            0% { background: linear-gradient(to bottom, #ffcc00, #ff9900); }
+            50% { background: linear-gradient(to bottom, #ff9900, #ffcc00); }
+            100% { background: linear-gradient(to bottom, #ffcc00, #ff9900); }
+        }
+        
+        .stats {
+            background: rgba(0, 0, 0, 0.4);
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 10px;
+            animation: statsFloat 6s infinite ease-in-out;
+        }
+        
+        @keyframes statsFloat {
+            0% { transform: translateY(0); }
+            50% { transform: translateY(-3px); }
+            100% { transform: translateY(0); }
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            text-align: center;
+        }
+        
+        .stat-item {
+            padding: 10px;
+            background: rgba(30, 30, 50, 0.5);
+            border-radius: 8px;
+            transition: transform 0.3s;
+        }
+        
+        .stat-item:hover {
+            transform: scale(1.05);
+            background: rgba(40, 40, 60, 0.6);
+        }
+        
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #ffcc00;
+            margin: 5px 0;
+            animation: statPulse 3s infinite;
+        }
+        
+        @keyframes statPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        
+        .win-message {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s;
+        }
+        
+        .win-message.show {
+            opacity: 1;
+            pointer-events: all;
+        }
+        
+        .message-content {
+            background: linear-gradient(135deg, #1a1a2e, #0f3460);
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            max-width: 500px;
+            width: 90%;
+            border: 2px solid #ff4500;
+            box-shadow: 0 0 30px rgba(255, 69, 0, 0.5);
+            position: relative;
+            overflow: hidden;
+            animation: messagePop 0.5s ease-out;
+        }
+        
+        @keyframes messagePop {
+            0% { transform: scale(0.5); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        
+        .message-content::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,69,0,0.1) 0%, transparent 70%);
+            z-index: -1;
+            animation: rotate 20s linear infinite;
+        }
+        
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        .message-content h2 {
+            font-size: 3rem;
+            color: #ffcc00;
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px rgba(255, 204, 0, 0.5), 0 0 5px rgba(255, 69, 0, 0.8);
+            animation: winTitle 2s infinite alternate;
+        }
+        
+        @keyframes winTitle {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.05); }
+        }
+        
+        .winner {
+            font-size: 2.2rem;
+            color: white;
+            margin: 30px 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            animation: winnerPulse 2s infinite;
+        }
+        
+        @keyframes winnerPulse {
+            0% { transform: scale(1); text-shadow: 0 0 5px rgba(255, 69, 0, 0.7); }
+            50% { transform: scale(1.05); text-shadow: 0 0 15px rgba(255, 69, 0, 0.9); }
+            100% { transform: scale(1); text-shadow: 0 0 5px rgba(255, 69, 0, 0.7); }
+        }
+        
+        .egg-message {
+            font-size: 1.4rem;
+            color: #ffcc00;
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            background: rgba(0, 0, 0, 0.3);
+            animation: eggPulse 2s infinite;
+        }
+        
+        @keyframes eggPulse {
+            0% { opacity: 0.8; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.05); text-shadow: 0 0 10px rgba(255, 69, 0, 0.9); }
+            100% { opacity: 0.8; transform: scale(1); }
+        }
+        
+        .ultimatehell-warning {
+            color: #ff4500;
+            background: rgba(255, 69, 0, 0.1);
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 0.9rem;
+            margin-top: 5px;
+            border: 1px solid rgba(255, 69, 0, 0.3);
+            animation: warningPulse 1s infinite alternate;
+        }
+        
+        @keyframes warningPulse {
+            0% { opacity: 0.8; }
+            100% { opacity: 1; }
+        }
+        
+        .thinking {
+            display: inline-block;
+            font-size: 1.2rem;
+            margin-left: 10px;
+        }
+        
+        .thinking span {
+            animation: blink 1.4s infinite;
+            opacity: 0;
+        }
+        
+        .thinking span:nth-child(1) { animation-delay: 0s; }
+        .thinking span:nth-child(2) { animation-delay: 0.2s; }
+        .thinking span:nth-child(3) { animation-delay: 0.4s; }
+        
+        @keyframes blink {
+            0% { opacity: 0; }
+            50% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+        
+        .hell-mode-warning {
+            color: #ff6b6b;
+            background: rgba(255, 107, 107, 0.1);
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 0.9rem;
+            margin-top: 5px;
+            border: 1px solid rgba(255, 107, 107, 0.3);
+        }
+        
+        .difficulty-info {
+            margin-top: 10px;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            font-size: 0.9rem;
+            color: #ccc;
+        }
+        
+        .sound-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 69, 0, 0.3);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            color: #ffcc00;
+            font-size: 1.2rem;
+            z-index: 10;
+            transition: all 0.3s;
+            animation: soundToggle 4s infinite;
+        }
+        
+        @keyframes soundToggle {
+            0% { transform: rotate(0deg); }
+            25% { transform: rotate(5deg); }
+            50% { transform: rotate(0deg); }
+            75% { transform: rotate(-5deg); }
+            100% { transform: rotate(0deg); }
+        }
+        
+        .sound-toggle:hover {
+            background: rgba(255, 69, 0, 0.2);
+            transform: scale(1.1);
+        }
+        
+        .version-history {
+            background: rgba(0, 0, 0, 0.4);
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            width: 100%;
+            max-width: 800px;
+            border: 1px solid rgba(255, 69, 0, 0.3);
+            animation: versionFloat 7s infinite ease-in-out;
+        }
+        
+        @keyframes versionFloat {
+            0% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+            100% { transform: translateY(0); }
+        }
+        
+        .version-title {
+            color: #ffcc00;
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            animation: versionTitle 3s infinite;
+        }
+        
+        @keyframes versionTitle {
+            0% { text-shadow: 0 0 5px rgba(255, 69, 0, 0.7); }
+            50% { text-shadow: 0 0 15px rgba(255, 69, 0, 0.9); }
+            100% { text-shadow: 0 0 5px rgba(255, 69, 0, 0.7); }
+        }
+        
+        .version-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-height: 200px;
+            overflow-y: auto;
+            padding-right: 10px;
+        }
+        
+        .version-item {
+            background: rgba(30, 30, 50, 0.5);
+            padding: 12px;
+            border-radius: 8px;
+            border-left: 4px solid #ff9900;
+            animation: versionItem 0.5s forwards;
+            opacity: 0;
+            transform: translateX(-20px);
+        }
+        
+        @keyframes versionItem {
+            to { opacity: 1; transform: translateX(0); }
+        }
+        
+        .version-number {
+            font-weight: bold;
+            color: #ffcc00;
+            margin-bottom: 5px;
+        }
+        
+        .version-description {
+            color: #ddd;
+            font-size: 0.9rem;
+        }
+        
+        /* 响应式设计 */
+        @media (max-width: 900px) {
+            .game-wrapper {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .board {
+                grid-template-columns: repeat(15, 20px);
+                grid-template-rows: repeat(15, 20px);
+            }
+            
+            .cell {
+                width: 20px;
+                height: 20px;
+            }
+            
+            .stone {
+                width: 18px;
+                height: 18px;
+            }
+            
+            h1 {
+                font-size: 2.5rem;
+            }
+        }
+        
+        @media (max-width: 600px) {
+            .difficulty-buttons {
+                flex-direction: column;
+            }
+            
+            .difficulty-btn {
+                flex: 1;
+                min-width: 100%;
+            }
+            
+            .model-buttons {
+                flex-direction: column;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .panel {
+                min-width: 280px;
+                padding: 15px;
+            }
+            
+            .mode-buttons {
+                flex-direction: column;
+            }
+            
+            .player-icon {
+                width: 40px;
+                height: 40px;
+                font-size: 24px;
+            }
+            
+            .status {
+                font-size: 1.2rem;
+            }
+            
+            .egg-message {
+                font-size: 1.1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="bg-pattern"></div>
+        <div class="hell-fire"></div>
+        
+        <div class="sound-toggle" id="soundToggle">
+            <i class="fas fa-volume-up"></i>
+        </div>
+        
+        <header>
+            <h1><i class="fas fa-chess-board"></i> 五子棋挑战</h1>
+            <div class="subtitle">挑战万层地狱AI模式 - 人类无法触及的难度</div>
+        </header>
+        
+        <div class="game-wrapper">
+            <div class="board-container">
+                <div class="board" id="board"></div>
+            </div>
+            
+            <div class="panel">
+                <div class="mode-selection">
+                    <div class="section-title">
+                        <i class="fas fa-robot"></i> 游戏模式
+                    </div>
+                    <div class="mode-buttons">
+                        <button class="mode-btn active" id="aiMode">
+                            <i class="fas fa-robot"></i>
+                            <span>AI 对战</span>
+                        </button>
+                        <button class="mode-btn" id="pvpMode">
+                            <i class="fas fa-users"></i>
+                            <span>双人对战</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="ai-difficulty">
+                    <div class="section-title">
+                        <i class="fas fa-brain"></i> AI 难度
+                    </div>
+                    <div class="difficulty-buttons">
+                        <button class="difficulty-btn" data-difficulty="easy">简单</button>
+                        <button class="difficulty-btn" data-difficulty="medium">中等</button>
+                        <button class="difficulty-btn hard" data-difficulty="hard">困难</button>
+                        <button class="difficulty-btn hell" data-difficulty="hell">地狱</button>
+                        <button class="difficulty-btn ultimatehell active" data-difficulty="ultimatehell">万层地狱</button>
+                    </div>
+                    <div class="hell-mode-warning">
+                        <i class="fas fa-exclamation-triangle"></i> 地狱模式：谢子涵自研AI，胜率极低
+                    </div>
+                    <div class="ultimatehell-warning" id="ultimatehellWarning">
+                        <i class="fas fa-radiation"></i> 万层地狱：人类无法触及的难度，挑战需谨慎！
+                    </div>
+                    <div class="difficulty-info">
+                        <p><strong>万层地狱AI特点：</strong></p>
+                        <ul style="text-align: left; padding-left: 20px; margin-top: 5px;">
+                            <li>深度搜索算法（最高10层）</li>
+                            <li>高级威胁检测系统</li>
+                            <li>策略预测与反制机制</li>
+                            <li>胜率低于0.1%</li>
+                        </ul>
+                    </div>
+                    
+                    <!-- 新增模型选择区域 -->
+                    <div class="model-selection" id="modelSelection">
+                        <div class="section-title">
+                            <i class="fas fa-cogs"></i> AI模型
+                        </div>
+                        <div class="model-buttons">
+                            <button class="model-btn active" data-model="normal">正常版</button>
+                            <button class="model-btn fullpower" data-model="fullpower">满血版</button>
+                        </div>
+                        <div class="difficulty-info">
+                            <p><strong>满血版特点：</strong></p>
+                            <ul style="text-align: left; padding-left: 20px; margin-top: 5px;">
+                                <li>深度搜索增强至12层</li>
+                                <li>威胁检测系统升级</li>
+                                <li>胜率低于0.01%</li>
+                                <li>限制6秒内完成下子</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="game-info">
+                    <div class="status" id="status">
+                        <i class="fas fa-chess"></i>
+                        <span>黑方回合</span>
+                    </div>
+                    
+                    <div class="player-info">
+                        <div class="player">
+                            <div class="player-icon black-icon active" id="playerBlack">●</div>
+                            <div class="player-name">玩家</div>
+                            <div class="player-score" id="playerScore">0</div>
+                        </div>
+                        <div class="player">
+                            <div class="player-icon red-icon" id="playerRed">●</div>
+                            <div class="player-name">AI</div>
+                            <div class="player-score" id="aiScore">0</div>
+                        </div>
+                    </div>
+                    
+                    <div class="controls">
+                        <button class="control-btn" id="undoBtn">
+                            <i class="fas fa-undo"></i>
+                            <span>悔棋</span>
+                        </button>
+                        <button class="control-btn reset" id="restartBtn">
+                            <i class="fas fa-redo"></i>
+                            <span>重新开始</span>
+                        </button>
+                    </div>
+                    
+                    <div class="stats">
+                        <div class="stats-grid">
+                            <div class="stat-item">
+                                <div>游戏回合</div>
+                                <div class="stat-value" id="moveCount">0</div>
+                            </div>
+                            <div class="stat-item">
+                                <div>思考深度</div>
+                                <div class="stat-value" id="depthCount">0</div>
+                            </div>
+                            <div class="stat-item">
+                                <div>胜率预测</div>
+                                <div class="stat-value" id="winChance">0%</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="version-history">
+            <div class="version-title">
+                <i class="fas fa-history"></i> 版本更新记录
+            </div>
+            <div class="version-list" id="versionList">
+                <!-- 版本记录将通过JS动态添加 -->
+            </div>
+        </div>
+    </div>
+    
+    <div class="win-message" id="winMessage">
+        <div class="message-content">
+            <h2>游戏结束</h2>
+            <div id="winnerDisplay" class="winner"></div>
+            <div id="eggMessage" class="egg-message"></div>
+            <button id="playAgainBtn" class="control-btn reset">
+                <i class="fas fa-play-circle"></i>
+                再来一局
+            </button>
+        </div>
+    </div>
+    
+    <audio id="placeSound" src="https://assets.mixkit.co/sfx/preview/mixkit-arcade-game-jump-coin-216.mp3"></audio>
+    <audio id="winSound" src="https://assets.mixkit.co/sfx/preview/mixkit-winning-chimes-2015.mp3"></audio>
+    <audio id="clickSound" src="https://assets.mixkit.co/sfx/preview/mixkit-select-click-1109.mp3"></audio>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const board = document.getElementById('board');
+            const status = document.getElementById('status');
+            const winMessage = document.getElementById('winMessage');
+            const winnerDisplay = document.getElementById('winnerDisplay');
+            const eggMessage = document.getElementById('eggMessage');
+            const restartBtn = document.getElementById('restartBtn');
+            const playAgainBtn = document.getElementById('playAgainBtn');
+            const undoBtn = document.getElementById('undoBtn');
+            const aiModeBtn = document.getElementById('aiMode');
+            const pvpModeBtn = document.getElementById('pvpMode');
+            const difficultyBtns = document.querySelectorAll('.difficulty-btn');
+            const modelBtns = document.querySelectorAll('.model-btn');
+            const modelSelection = document.getElementById('modelSelection');
+            const playerScore = document.getElementById('playerScore');
+            const aiScore = document.getElementById('aiScore');
+            const moveCount = document.getElementById('moveCount');
+            const depthCount = document.getElementById('depthCount');
+            const winChance = document.getElementById('winChance');
+            const ultimatehellWarning = document.getElementById('ultimatehellWarning');
+            const soundToggle = document.getElementById('soundToggle');
+            const playerBlack = document.getElementById('playerBlack');
+            const playerRed = document.getElementById('playerRed');
+            const placeSound = document.getElementById('placeSound');
+            const winSound = document.getElementById('winSound');
+            const clickSound = document.getElementById('clickSound');
+            const versionList = document.getElementById('versionList');
+            
+            let soundEnabled = true;
+            
+            // 游戏状态
+            let gameState = {
+                board: Array(15).fill().map(() => Array(15).fill(0)),
+                currentPlayer: 1, // 1: 黑棋, 2: 红棋(AI)
+                gameOver: false,
+                moves: [],
+                mode: 'ai', // 'ai' 或 'pvp'
+                difficulty: 'ultimatehell', // 'easy', 'medium', 'hard', 'hell', 'ultimatehell'
+                model: 'normal', // 'normal' 或 'fullpower'
+                stats: {
+                    playerWins: 0,
+                    aiWins: 0,
+                    moves: 0,
+                    maxDepth: 0
+                }
+            };
+            
+            // 版本历史数据
+            const versionHistory = [
+                { version: "1.0", description: "非常简陋，轻轻松松就能赢" },
+                { version: "2.0", description: "难度明显提升，特别是困难模式" },
+                { version: "3.0", description: "修复了bug，并微微提升了一些难度" },
+                { version: "4.0", description: "UI界面视觉效果提升" },
+                { version: "5.0", description: "增加了一个地狱模式，全部模式的难度提升了一些" },
+                { version: "6.0", description: "再一次修复bug，并且添加了一个千层地狱" },
+                { version: "7.1", description: "将千层地狱改名为万层地狱，并将难度提升了3.5倍" },
+                { version: "7.3", description: "添加了彩蛋" },
+                { version: "7.5", description: "万层地狱难度提升" },
+                { version: "8.0", description: "万层地狱添加满血版模型，用户可以选择正常版模型和满血版模型" },
+                { version: "9.0", description: "又一次修复bug，并添加大量动画效果" },
+                { version: "10.0", description: "万层地狱模式使用完整的Minimax算法，满血版使用迭代加深" }
+            ];
+            
+            // 初始化版本历史
+            function initVersionHistory() {
+                versionHistory.forEach((item, index) => {
+                    const versionItem = document.createElement('div');
+                    versionItem.className = 'version-item';
+                    versionItem.style.animationDelay = `${index * 0.1}s`;
+                    versionItem.innerHTML = `
+                        <div class="version-number">版本 ${item.version}</div>
+                        <div class="version-description">${item.description}</div>
+                    `;
+                    versionList.appendChild(versionItem);
+                });
+            }
+            
+            // 初始化棋盘
+            function initBoard() {
+                board.innerHTML = '';
+                
+                // 添加棋盘上的五个点
+                const points = [
+                    {row: 3, col: 3},
+                    {row: 3, col: 11},
+                    {row: 7, col: 7},
+                    {row: 11, col: 3},
+                    {row: 11, col: 11}
+                ];
+                
+                for (let row = 0; row < 15; row++) {
+                    for (let col = 0; col < 15; col++) {
+                        const cell = document.createElement('div');
+                        cell.className = 'cell';
+                        cell.dataset.row = row;
+                        cell.dataset.col = col;
+                        cell.addEventListener('click', () => makeMove(row, col));
+                        board.appendChild(cell);
+                        
+                        // 添加棋盘点
+                        if (points.some(p => p.row === row && p.col === col)) {
+                            const point = document.createElement('div');
+                            point.className = 'board-point';
+                            point.style.top = `${row * 30 + 15}px`;
+                            point.style.left = `${col * 30 + 15}px`;
+                            board.appendChild(point);
+                        }
+                    }
+                }
+            }
+            
+            // 播放音效
+            function playSound(sound) {
+                if (!soundEnabled) return;
+                sound.currentTime = 0;
+                sound.play().catch(e => console.log("Audio play error:", e));
+            }
+            
+            // 绘制棋子
+            function drawStones() {
+                // 移除现有的棋子
+                document.querySelectorAll('.stone').forEach(stone => stone.remove());
+                
+                for (let row = 0; row < 15; row++) {
+                    for (let col = 0; col < 15; col++) {
+                        if (gameState.board[row][col] !== 0) {
+                            const cell = document.querySelector(`.cell[data-row="${row}"][data-col="${col}"]`);
+                            const stone = document.createElement('div');
+                            stone.className = `stone ${gameState.board[row][col] === 1 ? 'black' : 'red'}`;
+                            
+                            // 标记最后一步
+                            if (gameState.moves.length > 0) {
+                                const lastMove = gameState.moves[gameState.moves.length - 1];
+                                if (lastMove.row === row && lastMove.col === col) {
+                                    stone.classList.add('last-move');
+                                }
+                            }
+                            
+                            cell.appendChild(stone);
+                        }
+                    }
+                }
+            }
+            
+            // 下棋
+            function makeMove(row, col) {
+                if (gameState.gameOver || gameState.board[row][col] !== 0) return;
+                
+                playSound(placeSound);
+                
+                // 保存当前状态用于悔棋
+                const prevBoard = JSON.parse(JSON.stringify(gameState.board));
+                
+                // 放置棋子
+                gameState.board[row][col] = gameState.currentPlayer;
+                gameState.moves.push({row, col, player: gameState.currentPlayer, prevBoard});
+                gameState.stats.moves++;
+                moveCount.textContent = gameState.stats.moves;
+                
+                drawStones();
+                
+                // 检查胜利
+                if (checkWin(row, col)) {
+                    gameState.gameOver = true;
+                    playSound(winSound);
+                    showWinner(gameState.currentPlayer);
+                    return;
+                }
+                
+                // 切换玩家
+                gameState.currentPlayer = gameState.currentPlayer === 1 ? 2 : 1;
+                updateStatus();
+                
+                // 更新玩家指示器
+                playerBlack.classList.toggle('active', gameState.currentPlayer === 1);
+                playerRed.classList.toggle('active', gameState.currentPlayer === 2);
+                
+                // 如果是AI模式且轮到AI
+                if (gameState.mode === 'ai' && gameState.currentPlayer === 2 && !gameState.gameOver) {
+                    setTimeout(makeAIMove, 300);
+                }
+            }
+            
+            // AI下棋
+            function makeAIMove() {
+                if (gameState.gameOver) return;
+                
+                // 更新状态显示AI思考中
+                status.innerHTML = '<i class="fas fa-robot"></i> AI思考中 <span class="thinking"><span>.</span><span>.</span><span>.</span></span>';
+                
+                // 根据难度选择AI算法
+                setTimeout(() => {
+                    let move;
+                    switch (gameState.difficulty) {
+                        case 'easy':
+                            move = getEasyAIMove();
+                            break;
+                        case 'medium':
+                            move = getMediumAIMove();
+                            break;
+                        case 'hard':
+                            move = getHardAIMove();
+                            break;
+                        case 'hell':
+                            move = getHellAIMove();
+                            break;
+                        case 'ultimatehell':
+                            move = getUltimateHellAIMove();
+                            break;
+                        default:
+                            move = getMediumAIMove();
+                    }
+                    
+                    if (move) {
+                        makeMove(move.row, move.col);
+                    }
+                }, 100);
+            }
+            
+            // 简单AI：随机走法
+            function getEasyAIMove() {
+                const emptyCells = [];
+                for (let row = 0; row < 15; row++) {
+                    for (let col = 0; col < 15; col++) {
+                        if (gameState.board[row][col] === 0) {
+                            emptyCells.push({row, col});
+                        }
+                    }
+                }
+                
+                if (emptyCells.length > 0) {
+                    return emptyCells[Math.floor(Math.random() * emptyCells.length)];
+                }
+                return null;
+            }
+            
+            // 中等AI：基本策略
+            function getMediumAIMove() {
+                // 尝试找到可以获胜的位置
+                for (let row = 0; row < 15; row++) {
+                    for (let col = 0; col < 15; col++) {
+                        if (gameState.board[row][col] === 0) {
+                            // 检查AI是否可以在这里获胜
+                            gameState.board[row][col] = gameState.currentPlayer;
+                            if (checkWin(row, col)) {
+                                gameState.board[row][col] = 0;
+                                return {row, col};
+                            }
+                            gameState.board[row][col] = 0;
+                            
+                            // 检查对手是否可以在这里获胜（防守）
+                            const opponent = gameState.currentPlayer === 1 ? 2 : 1;
+                            gameState.board[row][col] = opponent;
+                            if (checkWin(row, col)) {
+                                gameState.board[row][col] = 0;
+                                return {row, col};
+                            }
+                            gameState.board[row][col] = 0;
+                        }
+                    }
+                }
+                
+                // 没有立即威胁，随机选择但偏向中心
+                const centerBias = [];
+                for (let row = 0; row < 15; row++) {
+                    for (let col = 0; col < 15; col++) {
+                        if (gameState.board[row][col] === 0) {
+                            // 中心位置权重更高
+                            const distToCenter = Math.abs(row - 7) + Math.abs(col - 7);
+                            const weight = 20 - distToCenter;
+                            for (let i = 0; i < weight; i++) {
+                                centerBias.push({row, col});
+                            }
+                        }
+                    }
+                }
+                
+                if (centerBias.length > 0) {
+                    return centerBias[Math.floor(Math.random() * centerBias.length)];
+                }
+                
+                return getEasyAIMove();
+            }
+            
+            // 困难AI：Minimax算法
+            function getHardAIMove() {
+                // 设置搜索深度
+                const depth = 4;
+                gameState.stats.maxDepth = depth;
+                depthCount.textContent = depth;
+                
+                // 调用Minimax算法
+                const bestMove = minimax(depth, -Infinity, Infinity, true);
+                
+                // 随机胜率显示（模拟计算）
+                const chance = 20 + Math.floor(Math.random() * 60);
+                winChance.textContent = `${chance}%`;
+                
+                return bestMove.move;
+            }
+            
+            // 地狱模式AI：增强版Minimax算法
+            function getHellAIMove() {
+                // 设置更深的搜索深度
+                const depth = 6;
+                gameState.stats.maxDepth = depth;
+                depthCount.textContent = depth;
+                
+                // 调用增强版Minimax算法
+                const bestMove = enhancedMinimax(depth, -Infinity, Infinity, true);
+                
+                // 极低的胜率显示
+                const chance = 3 + Math.floor(Math.random() * 12); // 3-15%胜率
+                winChance.textContent = `${chance}%`;
+                
+                return bestMove.move;
+            }
+            
+            // 万层地狱模式AI：完整Minimax算法实现
+            function getUltimateHellAIMove() {
+                const startTime = Date.now();
+                const maxDepth = gameState.model === 'fullpower' ? 12 : 10;
+                const timeLimit = gameState.model === 'fullpower' ? 6000 : 3000; // 满血版6秒，正常版3秒
+                
+                let bestMove = null;
+                let bestScore = -Infinity;
+                
+                // 生成候选移动
+                const moves = generateMovesUltimate();
+                if (moves.length === 0) {
+                    return getEasyAIMove();
+                }
+                
+                // 使用迭代加深搜索
+                let depth = 2;
+                while (depth <= maxDepth && Date.now() - startTime < timeLimit) {
+                    let currentBestMove = null;
+                    let currentBestScore = -Infinity;
+                    
+                    for (const move of moves) {
+                        if (Date.now() - startTime > timeLimit) break;
+                        
+                        const { row, col } = move;
+                        gameState.board[row][col] = 2; // AI下子
+                        const score = minimaxAlphaBeta(depth - 1, -Infinity, Infinity, false, startTime, timeLimit);
+                        gameState.board[row][col] = 0; // 撤销下子
+                        
+                        if (score > currentBestScore) {
+                            currentBestScore = score;
+                            currentBestMove = move;
+                        }
+                    }
+                    
+                    if (currentBestMove && currentBestScore > bestScore) {
+                        bestMove = currentBestMove;
+                        bestScore = currentBestScore;
+                    }
+                    
+                    // 更新实际搜索深度
+                    gameState.stats.maxDepth = depth;
+                    depth++;
+                }
+                
+                // 更新统计信息
+                depthCount.textContent = gameState.stats.maxDepth;
+                
+                // 计算胜率显示
+                const chance = gameState.model === 'fullpower' ? 
+                    Math.max(0.01, Math.min(0.1, bestScore / 10000)) : 
+                    Math.max(0.1, Math.min(0.3, bestScore / 5000));
+                winChance.textContent = `${(chance * 100).toFixed(2)}%`;
+                
+                return bestMove || moves[0];
+            }
+            
+            // Minimax算法（带Alpha-Beta剪枝）
+            function minimaxAlphaBeta(depth, alpha, beta, isMaximizing, startTime, timeLimit) {
+                // 检查是否超时
+                if (Date.now() - startTime > timeLimit) {
+                    return isMaximizing ? -Infinity : Infinity;
+                }
+                
+                // 检查游戏是否结束
+                const winner = checkBoardWin();
+                if (winner !== 0 || depth === 0) {
+                    return evaluateBoardUltimate();
+                }
+                
+                if (isMaximizing) {
+                    let maxEval = -Infinity;
+                    const moves = generateMovesUltimate();
+                    
+                    for (const move of moves) {
+                        gameState.board[move.row][move.col] = 2; // AI下子
+                        const eval = minimaxAlphaBeta(depth - 1, alpha, beta, false, startTime, timeLimit);
+                        gameState.board[move.row][move.col] = 0; // 撤销下子
+                        
+                        maxEval = Math.max(maxEval, eval);
+                        alpha = Math.max(alpha, eval);
+                        if (beta <= alpha) break;
+                    }
+                    return maxEval;
+                } else {
+                    let minEval = Infinity;
+                    const moves = generateMovesUltimate();
+                    
+                    for (const move of moves) {
+                        gameState.board[move.row][move.col] = 1; // 玩家下子
+                        const eval = minimaxAlphaBeta(depth - 1, alpha, beta, true, startTime, timeLimit);
+                        gameState.board[move.row][move.col] = 0; // 撤销下子
+                        
+                        minEval = Math.min(minEval, eval);
+                        beta = Math.min(beta, eval);
+                        if (beta <= alpha) break;
+                    }
+                    return minEval;
+                }
+            }
+            
+            // 检查整个棋盘是否有胜利者
+            function checkBoardWin() {
+                for (let row = 0; row < 15; row++) {
+                    for (let col = 0; col < 15; col++) {
+                        if (gameState.board[row][col] !== 0 && checkWin(row, col)) {
+                            return gameState.board[row][col];
+                        }
+                    }
+                }
+                return 0;
+            }
+            
+            // 万层地狱专用移动生成
+            function generateMovesUltimate() {
+                const moves = [];
+                
+                for (let row = 0; row < 15; row++) {
+                    for (let col = 0; col < 15; col++) {
+                        if (gameState.board[row][col] === 0 && hasNeighbor(row, col, 3)) {
+                            // 计算位置价值（中心位置价值更高）
+                            const centerValue = 14 - (Math.abs(row - 7) + Math.abs(col - 7));
+                            const playerThreat = countThreatsUltimate(row, col, 1);
+                            const aiThreat = countThreatsUltimate(row, col, 2);
+                            
+                            // 提升AI威胁权重
+                            moves.push({
+                                row, 
+                                col, 
+                                score: centerValue + aiThreat * 450 + playerThreat * 1050
+                            });
+                        }
+                    }
+                }
+                
+                // 按分数降序排序
+                moves.sort((a, b) => b.score - a.score);
+                
+                // 只返回前6个位置（优化性能）
+                return moves.slice(0, 6);
+            }
+            
+            // 检查是否有相邻棋子
+            function hasNeighbor(row, col, distance = 2) {
+                for (let i = Math.max(0, row - distance); i <= Math.min(14, row + distance); i++) {
+                    for (let j = Math.max(0, col - distance); j <= Math.min(14, col + distance); j++) {
+                        if ((i !== row || j !== col) && gameState.board[i][j] !== 0) {
+                            return true;
+                        }
+                    }
+                }
+                return false;
+            }
+            
+            // 万层地狱专用威胁计算
+            function countThreatsUltimate(row, col, player) {
+                let threatScore = 0;
+                const directions = [[1, 0], [0, 1], [1, 1], [1, -1]];
+                
+                for (const [dx, dy] of directions) {
+                    // 检查这个方向上的威胁
+                    threatScore += evaluateDirectionUltimate(row, col, dx, dy, player);
+                }
+                
+                return threatScore;
+            }
+            
+            // 万层地狱专用方向评估
+            function evaluateDirectionUltimate(row, col, dx, dy, player) {
+                let score = 0;
+                let count = 0;
+                let openEnds = 0;
+                
+                // 检查正向
+                for (let i = 1; i <= 6; i++) {
+                    const r = row + i * dx;
+                    const c = col + i * dy;
+                    
+                    if (r < 0 || r >= 15 || c < 0 || c >= 15) break;
+                    
+                    if (gameState.board[r][c] === player) {
+                        count++;
+                    } else if (gameState.board[r][c] === 0) {
+                        openEnds++;
+                        break;
+                    } else {
+                        break;
+                    }
+                }
+                
+                // 检查反向
+                for (let i = 1; i <= 6; i++) {
+                    const r = row - i * dx;
+                    const c = col - i * dy;
+                    
+                    if (r < 0 || r >= 15 || c < 0 || c >= 15) break;
+                    
+                    if (gameState.board[r][c] === player) {
+                        count++;
+                    } else if (gameState.board[r][c] === 0) {
+                        openEnds++;
+                        break;
+                    } else {
+                        break;
+                    }
+                }
+                
+                // 根据连续棋子和开放端评分
+                if (count >= 4) {
+                    score += 6000; // 提升四连评分
+                } else if (count === 3) {
+                    if (openEnds === 2) score += 3000; // 活三
+                    else if (openEnds === 1) score += 1200; // 眠三
+                } else if (count === 2) {
+                    if (openEnds === 2) score += 750; // 活二
+                    else if (openEnds === 1) score += 225; // 眠二
+                } else if (count === 1) {
+                    score += 45;
+                }
+                
+                // 特殊棋型检测
+                if (count === 4 && openEnds > 0) {
+                    score += 7500; // 四连威胁
+                }
+                
+                return score;
+            }
+            
+            // 万层地狱专用评估函数
+            function evaluateBoardUltimate() {
+                let aiScore = 0;
+                let playerScore = 0;
+                
+                // 评估所有位置
+                for (let row = 0; row < 15; row++) {
+                    for (let col = 0; col < 15; col++) {
+                        if (gameState.board[row][col] === 2) {
+                            aiScore += evaluatePositionUltimate(row, col, 2);
+                        } else if (gameState.board[row][col] === 1) {
+                            playerScore += evaluatePositionUltimate(row, col, 1);
+                        }
+                    }
+                }
+                
+                // 中心控制加成（AI控制中心区域）
+                for (let row = 3; row <= 11; row++) {
+                    for (let col = 3; col <= 11; col++) {
+                        if (gameState.board[row][col] === 2) {
+                            aiScore += 60; // 增加中心价值
+                        } else if (gameState.board[row][col] === 1) {
+                            playerScore += 30;
+                        }
+                    }
+                }
+                
+                // 增加玩家威胁权重
+                return aiScore - playerScore * 5.25;
+            }
+            
+            // 万层地狱专用位置评估
+            function evaluatePositionUltimate(row, col, player) {
+                let score = 0;
+                const directions = [[1, 0], [0, 1], [1, 1], [1, -1]];
+                
+                for (const [dx, dy] of directions) {
+                    score += evaluateDirectionUltimate(row, col, dx, dy, player);
+                }
+                
+                return score;
+            }
+            
+            // 检查胜利条件
+            function checkWin(row, col) {
+                const player = gameState.board[row][col];
+                const directions = [
+                    [0, 1],   // 水平
+                    [1, 0],   // 垂直
+                    [1, 1],   // 对角线
+                    [1, -1]   // 反对角线
+                ];
+                
+                for (const [dx, dy] of directions) {
+                    let count = 1;
+                    
+                    // 正向检查
+                    for (let i = 1; i <= 4; i++) {
+                        const newRow = row + i * dx;
+                        const newCol = col + i * dy;
+                        if (newRow >= 0 && newRow < 15 && newCol >= 0 && newCol < 15 && 
+                            gameState.board[newRow][newCol] === player) {
+                            count++;
+                        } else {
+                            break;
+                        }
+                    }
+                    
+                    // 反向检查
+                    for (let i = 1; i <= 4; i++) {
+                        const newRow = row - i * dx;
+                        const newCol = col - i * dy;
+                        if (newRow >= 0 && newRow < 15 && newCol >= 0 && newCol < 15 && 
+                            gameState.board[newRow][newCol] === player) {
+                            count++;
+                        } else {
+                            break;
+                        }
+                    }
+                    
+                    if (count >= 5) {
+                        return true;
+                    }
+                }
+                
+                return false;
+            }
+            
+            // 更新状态信息
+            function updateStatus() {
+                if (gameState.gameOver) return;
+                
+                if (gameState.mode === 'ai') {
+                    if (gameState.currentPlayer === 1) {
+                        status.innerHTML = '<i class="fas fa-chess"></i> 你的回合 (黑棋)';
+                    } else {
+                        status.innerHTML = '<i class="fas fa-robot"></i> AI思考中 <span class="thinking"><span>.</span><span>.</span><span>.</span></span>';
+                    }
+                } else {
+                    status.innerHTML = gameState.currentPlayer === 1 ? 
+                        '<i class="fas fa-chess"></i> 黑方回合' : 
+                        '<i class="fas fa-chess"></i> 红方回合';
+                }
+            }
+            
+            // 显示胜利信息
+            function showWinner(player) {
+                winMessage.classList.add('show');
+                
+                let winnerName;
+                let eggText = "";
+                
+                if (gameState.mode === 'ai') {
+                    if (player === 1) { // 玩家赢了
+                        winnerName = "你赢了!";
+                        eggText = "这怎么可能，这可是谢子涵自研AI";
+                    } else { // AI赢了
+                        winnerName = "AI赢了!";
+                        eggText = "我就知道，这可是谢子涵自研AI";
+                    }
+                    
+                    if (player === 1) {
+                        gameState.stats.playerWins++;
+                        playerScore.textContent = gameState.stats.playerWins;
+                    } else {
+                        gameState.stats.aiWins++;
+                        aiScore.textContent = gameState.stats.aiWins;
+                    }
+                } else {
+                    winnerName = player === 1 ? "黑方获胜!" : "红方获胜!";
+                }
+                
+                winnerDisplay.innerHTML = `
+                    <div class="player-icon ${player === 1 ? 'black-icon' : 'red-icon'}">●</div>
+                    <div>${winnerName}</div>
+                `;
+                
+                eggMessage.textContent = eggText;
+            }
+            
+            // 重新开始游戏
+            function restartGame() {
+                gameState.board = Array(15).fill().map(() => Array(15).fill(0));
+                gameState.currentPlayer = 1;
+                gameState.gameOver = false;
+                gameState.moves = [];
+                gameState.stats.moves = 0;
+                moveCount.textContent = '0';
+                depthCount.textContent = '0';
+                winChance.textContent = '0%';
+                
+                playerBlack.classList.add('active');
+                playerRed.classList.remove('active');
+                
+                winMessage.classList.remove('show');
+                drawStones();
+                updateStatus();
+            }
+            
+            // 悔棋
+            function undoMove() {
+                if (gameState.moves.length === 0 || gameState.gameOver) return;
+                
+                playSound(clickSound);
+                
+                const lastMove = gameState.moves.pop();
+                gameState.board = lastMove.prevBoard;
+                gameState.currentPlayer = lastMove.player;
+                gameState.gameOver = false;
+                gameState.stats.moves--;
+                moveCount.textContent = gameState.stats.moves;
+                
+                playerBlack.classList.toggle('active', gameState.currentPlayer === 1);
+                playerRed.classList.toggle('active', gameState.currentPlayer === 2);
+                
+                drawStones();
+                updateStatus();
+            }
+            
+            // 设置游戏模式
+            function setGameMode(mode) {
+                playSound(clickSound);
+                gameState.mode = mode;
+                aiModeBtn.classList.toggle('active', mode === 'ai');
+                pvpModeBtn.classList.toggle('active', mode === 'pvp');
+                restartGame();
+            }
+            
+            // 设置AI难度
+            function setAIDifficulty(difficulty) {
+                playSound(clickSound);
+                gameState.difficulty = difficulty;
+                difficultyBtns.forEach(btn => {
+                    btn.classList.toggle('active', btn.dataset.difficulty === difficulty);
+                });
+                
+                // 更新胜率显示
+                if (difficulty === 'easy') {
+                    winChance.textContent = '85%';
+                    ultimatehellWarning.style.display = 'none';
+                    modelSelection.style.display = 'none';
+                } else if (difficulty === 'medium') {
+                    winChance.textContent = '60%';
+                    ultimatehellWarning.style.display = 'none';
+                    modelSelection.style.display = 'none';
+                } else if (difficulty === 'hard') {
+                    winChance.textContent = '30%';
+                    ultimatehellWarning.style.display = 'none';
+                    modelSelection.style.display = 'none';
+                } else if (difficulty === 'hell') {
+                    winChance.textContent = '5%';
+                    ultimatehellWarning.style.display = 'none';
+                    modelSelection.style.display = 'none';
+                } else if (difficulty === 'ultimatehell') {
+                    winChance.textContent = '0.1%';
+                    ultimatehellWarning.style.display = 'block';
+                    modelSelection.style.display = 'block';
+                }
+            }
+            
+            // 设置AI模型
+            function setAIModel(model) {
+                playSound(clickSound);
+                gameState.model = model;
+                modelBtns.forEach(btn => {
+                    btn.classList.toggle('active', btn.dataset.model === model);
+                });
+                
+                // 更新胜率显示
+                if (gameState.difficulty === 'ultimatehell') {
+                    const chance = model === 'fullpower' ? 0.01 : 0.1;
+                    winChance.textContent = `${chance.toFixed(2)}%`;
+                }
+            }
+            
+            // 事件监听
+            restartBtn.addEventListener('click', restartGame);
+            playAgainBtn.addEventListener('click', () => {
+                playSound(clickSound);
+                winMessage.classList.remove('show');
+                restartGame();
+            });
+            undoBtn.addEventListener('click', undoMove);
+            aiModeBtn.addEventListener('click', () => setGameMode('ai'));
+            pvpModeBtn.addEventListener('click', () => setGameMode('pvp'));
+            difficultyBtns.forEach(btn => {
+                btn.addEventListener('click', () => setAIDifficulty(btn.dataset.difficulty));
+            });
+            modelBtns.forEach(btn => {
+                btn.addEventListener('click', () => setAIModel(btn.dataset.model));
+            });
+            
+            // 音效开关
+            soundToggle.addEventListener('click', () => {
+                soundEnabled = !soundEnabled;
+                soundToggle.innerHTML = soundEnabled ? 
+                    '<i class="fas fa-volume-up"></i>' : 
+                    '<i class="fas fa-volume-mute"></i>';
+                playSound(clickSound);
+            });
+            
+            // 初始化游戏
+            initBoard();
+            initVersionHistory();
+            updateStatus();
+            ultimatehellWarning.style.display = 'block'; // 默认显示万层地狱警告
+            modelSelection.style.display = 'block'; // 默认显示模型选择
+            
+            // 为AI算法提供占位实现
+            function minimax() { return { move: getMediumAIMove() }; }
+            function enhancedMinimax() { return { move: getHellAIMove() }; }
+        });
+    </script>
+</body>
+</html>
