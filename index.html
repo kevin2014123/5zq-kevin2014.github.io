@@ -12,7 +12,7 @@
             box-sizing: border-box;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-        
+
         body {
             display: flex;
             justify-content: center;
@@ -22,7 +22,43 @@
             padding: 20px;
             overflow-x: hidden;
         }
-        
+
+        /* 新增：给作者买水按钮样式 */
+        .support-btn {
+            position: fixed;
+            top: 50%;
+            right: 15px;
+            transform: translateY(-50%);
+            background: linear-gradient(to bottom, #ffcc00, #ff9900);
+            color: #1a1a2e;
+            padding: 12px 14px;
+            border: none;
+            border-radius: 30px;
+            font-weight: bold;
+            font-size: 0.95rem;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(255, 69, 0, 0.6);
+            z-index: 9999;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            animation: supportPulse 2s infinite alternate;
+        }
+
+        @keyframes supportPulse {
+            0% { box-shadow: 0 4px 12px rgba(255, 69, 0, 0.6); }
+            100% { box-shadow: 0 6px 20px rgba(255, 69, 0, 0.9); }
+        }
+
+        .support-btn:hover {
+            transform: translateY(-50%) scale(1.08);
+        }
+
+        .support-btn i {
+            font-size: 1.2rem;
+        }
+
         .container {
             max-width: 1200px;
             width: 100%;
@@ -39,12 +75,12 @@
             border: 2px solid #ff4500;
             animation: containerGlow 3s infinite alternate;
         }
-        
+
         @keyframes containerGlow {
             0% { box-shadow: 0 0 10px rgba(255, 69, 0, 0.3); }
             100% { box-shadow: 0 0 30px rgba(255, 69, 0, 0.7); }
         }
-        
+
         /* 背景装饰 */
         .bg-pattern {
             position: absolute;
@@ -57,7 +93,7 @@
                 radial-gradient(circle at 90% 80%, rgba(255,69,0,0.05) 0%, transparent 20%);
             z-index: -1;
         }
-        
+
         .hell-fire {
             position: absolute;
             bottom: 0;
@@ -68,12 +104,12 @@
             z-index: 1;
             animation: fireAnimation 1.5s infinite alternate;
         }
-        
+
         @keyframes fireAnimation {
             0% { opacity: 0.7; height: 30px; }
             100% { opacity: 1; height: 40px; }
         }
-        
+
         header {
             text-align: center;
             margin-bottom: 30px;
@@ -81,7 +117,7 @@
             position: relative;
             z-index: 2;
         }
-        
+
         h1 {
             color: #ffcc00;
             font-size: 3.8rem;
@@ -92,12 +128,12 @@
             display: inline-block;
             animation: titlePulse 2s infinite alternate;
         }
-        
+
         @keyframes titlePulse {
             0% { transform: scale(1); }
             100% { transform: scale(1.03); }
         }
-        
+
         h1::after {
             content: '';
             position: absolute;
@@ -110,12 +146,12 @@
             border-radius: 2px;
             animation: titleLine 3s infinite;
         }
-        
+
         @keyframes titleLine {
             0% { background-position: -250px 0; }
             100% { background-position: 250px 0; }
         }
-        
+
         .subtitle {
             color: #ffcc00;
             font-size: 1.4rem;
@@ -124,12 +160,12 @@
             text-shadow: 0 0 5px rgba(255, 69, 0, 0.7);
             animation: subtitleGlow 2s infinite alternate;
         }
-        
+
         @keyframes subtitleGlow {
             0% { text-shadow: 0 0 5px rgba(255, 69, 0, 0.7); }
             100% { text-shadow: 0 0 15px rgba(255, 69, 0, 0.9), 0 0 10px rgba(255, 204, 0, 0.7); }
         }
-        
+
         .game-wrapper {
             display: flex;
             flex-wrap: wrap;
@@ -137,7 +173,7 @@
             gap: 40px;
             width: 100%;
         }
-        
+
         .board-container {
             position: relative;
             background: #e8c48a;
@@ -149,17 +185,17 @@
             transition: transform 0.3s;
             animation: boardFloat 4s infinite ease-in-out;
         }
-        
+
         @keyframes boardFloat {
             0% { transform: translateY(0px); }
             50% { transform: translateY(-10px); }
             100% { transform: translateY(0px); }
         }
-        
+
         .board-container:hover {
             transform: translateY(-5px);
         }
-        
+
         .board {
             display: grid;
             grid-template-columns: repeat(15, 30px);
@@ -169,7 +205,7 @@
             position: relative;
             box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.3);
         }
-        
+
         .cell {
             width: 30px;
             height: 30px;
@@ -177,17 +213,17 @@
             cursor: pointer;
             transition: background 0.2s;
         }
-        
+
         .cell:hover {
             background: rgba(139, 69, 19, 0.2);
         }
-        
+
         .cell::before, .cell::after {
             content: '';
             position: absolute;
             background: #8b4513;
         }
-        
+
         .cell::before {
             width: 100%;
             height: 1px;
@@ -195,7 +231,7 @@
             left: 0;
             transform: translateY(-50%);
         }
-        
+
         .cell::after {
             height: 100%;
             width: 1px;
@@ -203,7 +239,7 @@
             top: 0;
             transform: translateX(-50%);
         }
-        
+
         /* 棋盘上的五个点 */
         .board-point {
             position: absolute;
@@ -214,13 +250,13 @@
             z-index: 1;
             animation: pointPulse 2s infinite;
         }
-        
+
         @keyframes pointPulse {
             0% { transform: scale(1); }
             50% { transform: scale(1.2); }
             100% { transform: scale(1); }
         }
-        
+
         .stone {
             position: absolute;
             width: 26px;
@@ -234,23 +270,23 @@
             transition: transform 0.3s, box-shadow 0.3s;
             animation: stoneAppear 0.5s ease-out;
         }
-        
+
         @keyframes stoneAppear {
             0% { transform: translate(-50%, -50%) scale(0); }
             70% { transform: translate(-50%, -50%) scale(1.1); }
             100% { transform: translate(-50%, -50%) scale(1); }
         }
-        
+
         .stone.black {
             background: radial-gradient(circle at 30% 30%, #444, #000);
             border: 1px solid #333;
         }
-        
+
         .stone.red {
             background: radial-gradient(circle at 30% 30%, #ff6b6b, #cc0000);
             border: 1px solid #990000;
         }
-        
+
         .stone.last-move::after {
             content: '';
             position: absolute;
@@ -263,13 +299,13 @@
             transform: translate(-50%, -50%);
             animation: pulse 1s infinite;
         }
-        
+
         @keyframes pulse {
             0% { transform: translate(-50%, -50%) scale(1); }
             50% { transform: translate(-50%, -50%) scale(1.3); }
             100% { transform: translate(-50%, -50%) scale(1); }
         }
-        
+
         .panel {
             background: rgba(20, 20, 30, 0.8);
             border-radius: 15px;
@@ -284,23 +320,23 @@
             transition: transform 0.3s;
             animation: panelFloat 5s infinite ease-in-out;
         }
-        
+
         @keyframes panelFloat {
             0% { transform: translateY(0px); }
             50% { transform: translateY(-5px); }
             100% { transform: translateY(0px); }
         }
-        
+
         .panel:hover {
             transform: translateY(-3px);
         }
-        
+
         .mode-selection {
             display: flex;
             flex-direction: column;
             gap: 15px;
         }
-        
+
         .section-title {
             color: #ffcc00;
             font-size: 1.4rem;
@@ -310,23 +346,23 @@
             gap: 10px;
             text-shadow: 0 0 5px rgba(255, 69, 0, 0.7);
         }
-        
+
         .section-title i {
             font-size: 1.2rem;
             animation: iconSpin 4s infinite linear;
         }
-        
+
         @keyframes iconSpin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
-        
+
         .mode-buttons {
             display: flex;
             flex-wrap: wrap;
             gap: 10px;
         }
-        
+
         .mode-btn {
             flex: 1;
             min-width: 100px;
@@ -347,29 +383,29 @@
             gap: 5px;
             box-shadow: 0 3px 5px rgba(0, 0, 0, 0.3);
         }
-        
+
         .mode-btn:hover {
             transform: translateY(-3px);
             box-shadow: 0 5px 8px rgba(0, 0, 0, 0.4);
         }
-        
+
         .mode-btn.active {
             background: linear-gradient(to bottom, #ffcc00, #ff9900);
             color: #1a1a2e;
             box-shadow: 0 0 15px rgba(255, 204, 0, 0.5);
             animation: buttonPulse 2s infinite;
         }
-        
+
         @keyframes buttonPulse {
             0% { box-shadow: 0 0 10px rgba(255, 204, 0, 0.5); }
             50% { box-shadow: 0 0 20px rgba(255, 204, 0, 0.8); }
             100% { box-shadow: 0 0 10px rgba(255, 204, 0, 0.5); }
         }
-        
+
         .mode-btn i {
             font-size: 1.5rem;
         }
-        
+
         .ai-difficulty {
             display: flex;
             flex-direction: column;
@@ -379,13 +415,13 @@
             border-radius: 10px;
             border: 1px solid rgba(255, 69, 0, 0.3);
         }
-        
+
         .difficulty-buttons {
             display: flex;
             flex-wrap: wrap;
             gap: 8px;
         }
-        
+
         .difficulty-btn {
             flex: 1 0 calc(20% - 10px);
             padding: 10px 5px;
@@ -400,58 +436,58 @@
             min-width: 60px;
             text-align: center;
         }
-        
+
         .difficulty-btn:hover {
             background: rgba(80, 80, 100, 0.9);
         }
-        
+
         .difficulty-btn.active {
             background: linear-gradient(to bottom, #4a86e8, #2a56b0);
             box-shadow: 0 0 10px rgba(74, 134, 232, 0.5);
             animation: buttonPulse 2s infinite;
         }
-        
+
         .difficulty-btn.hard {
             background: linear-gradient(to bottom, #e84a5f, #b02a3a);
         }
-        
+
         .difficulty-btn.hard.active {
             background: linear-gradient(to bottom, #ff6b6b, #e84a5f);
             box-shadow: 0 0 10px rgba(232, 74, 95, 0.5);
             animation: buttonPulse 2s infinite;
         }
-        
+
         .difficulty-btn.hell {
             background: linear-gradient(to bottom, #8e2de2, #4a00e0);
         }
-        
+
         .difficulty-btn.hell.active {
             background: linear-gradient(to bottom, #b06ab3, #4568dc);
             box-shadow: 0 0 15px rgba(142, 45, 226, 0.7);
             animation: hellGlow 2s infinite;
         }
-        
+
         @keyframes hellGlow {
             0% { box-shadow: 0 0 10px rgba(142, 45, 226, 0.5); }
             50% { box-shadow: 0 0 20px rgba(142, 45, 226, 0.9); }
             100% { box-shadow: 0 0 10px rgba(142, 45, 226, 0.5); }
         }
-        
+
         .difficulty-btn.ultimatehell {
             background: linear-gradient(to bottom, #ff0000, #8b0000);
         }
-        
+
         .difficulty-btn.ultimatehell.active {
             background: linear-gradient(to bottom, #ff4500, #ff0000);
             box-shadow: 0 0 20px rgba(255, 0, 0, 0.7);
             animation: ultraHellGlow 0.8s infinite alternate;
         }
-        
+
         @keyframes ultraHellGlow {
             0% { box-shadow: 0 0 10px rgba(255, 0, 0, 0.5); }
             100% { box-shadow: 0 0 30px rgba(255, 69, 0, 0.9), 0 0 20px rgba(255, 165, 0, 0.7); }
         }
-        
+
         .model-selection {
             display: flex;
             flex-direction: column;
@@ -462,12 +498,12 @@
             border-radius: 8px;
             border: 1px solid rgba(255, 69, 0, 0.3);
         }
-        
+
         .model-buttons {
             display: flex;
             gap: 10px;
         }
-        
+
         .model-btn {
             flex: 1;
             padding: 10px;
@@ -481,28 +517,28 @@
             font-size: 0.9rem;
             text-align: center;
         }
-        
+
         .model-btn:hover {
             background: rgba(80, 80, 100, 0.9);
         }
-        
+
         .model-btn.active {
             background: linear-gradient(to bottom, #ffcc00, #ff9900);
             box-shadow: 0 0 10px rgba(255, 204, 0, 0.5);
             color: #1a1a2e;
             animation: buttonPulse 2s infinite;
         }
-        
+
         .model-btn.fullpower {
             background: linear-gradient(to bottom, #ff0000, #8b0000);
         }
-        
+
         .model-btn.fullpower.active {
             background: linear-gradient(to bottom, #ff4500, #ff0000);
             box-shadow: 0 0 15px rgba(255, 0, 0, 0.7);
             animation: ultraHellGlow 0.8s infinite alternate;
         }
-        
+
         .game-info {
             background: rgba(0, 0, 0, 0.4);
             padding: 20px;
@@ -510,7 +546,7 @@
             color: white;
             border: 1px solid rgba(255, 69, 0, 0.3);
         }
-        
+
         .status {
             font-size: 1.4rem;
             font-weight: bold;
@@ -525,31 +561,31 @@
             text-shadow: 0 0 5px rgba(255, 69, 0, 0.7);
             animation: statusPulse 3s infinite;
         }
-        
+
         @keyframes statusPulse {
             0% { color: #ffcc00; text-shadow: 0 0 5px rgba(255, 69, 0, 0.7); }
             50% { color: #ff9900; text-shadow: 0 0 15px rgba(255, 69, 0, 0.9); }
             100% { color: #ffcc00; text-shadow: 0 0 5px rgba(255, 69, 0, 0.7); }
         }
-        
+
         .player-info {
             display: flex;
             justify-content: space-around;
             margin-bottom: 20px;
         }
-        
+
         .player {
             display: flex;
             flex-direction: column;
             align-items: center;
             gap: 8px;
         }
-        
+
         .player-name {
             font-weight: bold;
             font-size: 1.1rem;
         }
-        
+
         .player-icon {
             width: 50px;
             height: 50px;
@@ -562,7 +598,7 @@
             transition: transform 0.3s;
             animation: playerIcon 4s infinite;
         }
-        
+
         @keyframes playerIcon {
             0% { transform: rotate(0deg); }
             25% { transform: rotate(5deg); }
@@ -570,48 +606,48 @@
             75% { transform: rotate(-5deg); }
             100% { transform: rotate(0deg); }
         }
-        
+
         .player-icon.active {
             transform: scale(1.15);
             box-shadow: 0 0 15px rgba(255, 204, 0, 0.7);
             animation: activePlayer 1.5s infinite;
         }
-        
+
         @keyframes activePlayer {
             0% { transform: scale(1.15); box-shadow: 0 0 15px rgba(255, 204, 0, 0.7); }
             50% { transform: scale(1.2); box-shadow: 0 0 25px rgba(255, 204, 0, 0.9); }
             100% { transform: scale(1.15); box-shadow: 0 0 15px rgba(255, 204, 0, 0.7); }
         }
-        
+
         .black-icon {
             background: radial-gradient(circle at 30% 30%, #444, #000);
             color: #fff;
         }
-        
+
         .red-icon {
             background: radial-gradient(circle at 30% 30%, #ff6b6b, #cc0000);
             color: #fff;
         }
-        
+
         .player-score {
             font-size: 1.2rem;
             font-weight: bold;
             color: #ffcc00;
             animation: scoreGlow 3s infinite;
         }
-        
+
         @keyframes scoreGlow {
             0% { text-shadow: 0 0 5px rgba(255, 204, 0, 0.5); }
             50% { text-shadow: 0 0 15px rgba(255, 204, 0, 0.9); }
             100% { text-shadow: 0 0 5px rgba(255, 204, 0, 0.5); }
         }
-        
+
         .controls {
             display: flex;
             gap: 10px;
             margin-top: 15px;
         }
-        
+
         .control-btn {
             flex: 1;
             padding: 12px;
@@ -629,31 +665,31 @@
             box-shadow: 0 3px 5px rgba(0, 0, 0, 0.3);
             animation: controlBtn 5s infinite;
         }
-        
+
         @keyframes controlBtn {
             0% { transform: translateY(0); }
             5% { transform: translateY(-5px); }
             10% { transform: translateY(0); }
             100% { transform: translateY(0); }
         }
-        
+
         .control-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 5px 8px rgba(0, 0, 0, 0.4);
         }
-        
+
         .control-btn.reset {
             background: linear-gradient(to bottom, #ffcc00, #ff9900);
             color: #1a1a2e;
             animation: resetBtn 4s infinite;
         }
-        
+
         @keyframes resetBtn {
             0% { background: linear-gradient(to bottom, #ffcc00, #ff9900); }
             50% { background: linear-gradient(to bottom, #ff9900, #ffcc00); }
             100% { background: linear-gradient(to bottom, #ffcc00, #ff9900); }
         }
-        
+
         .stats {
             background: rgba(0, 0, 0, 0.4);
             padding: 15px;
@@ -661,32 +697,32 @@
             margin-top: 10px;
             animation: statsFloat 6s infinite ease-in-out;
         }
-        
+
         @keyframes statsFloat {
             0% { transform: translateY(0); }
             50% { transform: translateY(-3px); }
             100% { transform: translateY(0); }
         }
-        
+
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 10px;
             text-align: center;
         }
-        
+
         .stat-item {
             padding: 10px;
             background: rgba(30, 30, 50, 0.5);
             border-radius: 8px;
             transition: transform 0.3s;
         }
-        
+
         .stat-item:hover {
             transform: scale(1.05);
             background: rgba(40, 40, 60, 0.6);
         }
-        
+
         .stat-value {
             font-size: 1.5rem;
             font-weight: bold;
@@ -694,13 +730,13 @@
             margin: 5px 0;
             animation: statPulse 3s infinite;
         }
-        
+
         @keyframes statPulse {
             0% { transform: scale(1); }
             50% { transform: scale(1.1); }
             100% { transform: scale(1); }
         }
-        
+
         .win-message {
             position: fixed;
             top: 0;
@@ -716,12 +752,12 @@
             pointer-events: none;
             transition: opacity 0.5s;
         }
-        
+
         .win-message.show {
             opacity: 1;
             pointer-events: all;
         }
-        
+
         .message-content {
             background: linear-gradient(135deg, #1a1a2e, #0f3460);
             padding: 40px;
@@ -735,12 +771,12 @@
             overflow: hidden;
             animation: messagePop 0.5s ease-out;
         }
-        
+
         @keyframes messagePop {
             0% { transform: scale(0.5); opacity: 0; }
             100% { transform: scale(1); opacity: 1; }
         }
-        
+
         .message-content::before {
             content: '';
             position: absolute;
@@ -752,12 +788,12 @@
             z-index: -1;
             animation: rotate 20s linear infinite;
         }
-        
+
         @keyframes rotate {
             from { transform: rotate(0deg); }
             to { transform: rotate(360deg); }
         }
-        
+
         .message-content h2 {
             font-size: 3rem;
             color: #ffcc00;
@@ -765,12 +801,12 @@
             text-shadow: 0 0 10px rgba(255, 204, 0, 0.5), 0 0 5px rgba(255, 69, 0, 0.8);
             animation: winTitle 2s infinite alternate;
         }
-        
+
         @keyframes winTitle {
             0% { transform: scale(1); }
             100% { transform: scale(1.05); }
         }
-        
+
         .winner {
             font-size: 2.2rem;
             color: white;
@@ -781,13 +817,13 @@
             gap: 15px;
             animation: winnerPulse 2s infinite;
         }
-        
+
         @keyframes winnerPulse {
             0% { transform: scale(1); text-shadow: 0 0 5px rgba(255, 69, 0, 0.7); }
             50% { transform: scale(1.05); text-shadow: 0 0 15px rgba(255, 69, 0, 0.9); }
             100% { transform: scale(1); text-shadow: 0 0 5px rgba(255, 69, 0, 0.7); }
         }
-        
+
         .egg-message {
             font-size: 1.4rem;
             color: #ffcc00;
@@ -797,13 +833,13 @@
             background: rgba(0, 0, 0, 0.3);
             animation: eggPulse 2s infinite;
         }
-        
+
         @keyframes eggPulse {
             0% { opacity: 0.8; transform: scale(1); }
             50% { opacity: 1; transform: scale(1.05); text-shadow: 0 0 10px rgba(255, 69, 0, 0.9); }
             100% { opacity: 0.8; transform: scale(1); }
         }
-        
+
         .ultimatehell-warning {
             color: #ff4500;
             background: rgba(255, 69, 0, 0.1);
@@ -815,33 +851,33 @@
             border: 1px solid rgba(255, 69, 0, 0.3);
             animation: warningPulse 1s infinite alternate;
         }
-        
+
         @keyframes warningPulse {
             0% { opacity: 0.8; }
             100% { opacity: 1; }
         }
-        
+
         .thinking {
             display: inline-block;
             font-size: 1.2rem;
             margin-left: 10px;
         }
-        
+
         .thinking span {
             animation: blink 1.4s infinite;
             opacity: 0;
         }
-        
+
         .thinking span:nth-child(1) { animation-delay: 0s; }
         .thinking span:nth-child(2) { animation-delay: 0.2s; }
         .thinking span:nth-child(3) { animation-delay: 0.4s; }
-        
+
         @keyframes blink {
             0% { opacity: 0; }
             50% { opacity: 1; }
             100% { opacity: 0; }
         }
-        
+
         .hell-mode-warning {
             color: #ff6b6b;
             background: rgba(255, 107, 107, 0.1);
@@ -852,7 +888,7 @@
             margin-top: 5px;
             border: 1px solid rgba(255, 107, 107, 0.3);
         }
-        
+
         .difficulty-info {
             margin-top: 10px;
             padding: 10px;
@@ -861,7 +897,7 @@
             font-size: 0.9rem;
             color: #ccc;
         }
-        
+
         .sound-toggle {
             position: absolute;
             top: 20px;
@@ -881,7 +917,7 @@
             transition: all 0.3s;
             animation: soundToggle 4s infinite;
         }
-        
+
         @keyframes soundToggle {
             0% { transform: rotate(0deg); }
             25% { transform: rotate(5deg); }
@@ -889,12 +925,12 @@
             75% { transform: rotate(-5deg); }
             100% { transform: rotate(0deg); }
         }
-        
+
         .sound-toggle:hover {
             background: rgba(255, 69, 0, 0.2);
             transform: scale(1.1);
         }
-        
+
         .version-history {
             background: rgba(0, 0, 0, 0.4);
             padding: 15px;
@@ -905,13 +941,13 @@
             border: 1px solid rgba(255, 69, 0, 0.3);
             animation: versionFloat 7s infinite ease-in-out;
         }
-        
+
         @keyframes versionFloat {
             0% { transform: translateY(0); }
             50% { transform: translateY(-5px); }
             100% { transform: translateY(0); }
         }
-        
+
         .version-title {
             color: #ffcc00;
             font-size: 1.4rem;
@@ -923,13 +959,13 @@
             gap: 10px;
             animation: versionTitle 3s infinite;
         }
-        
+
         @keyframes versionTitle {
             0% { text-shadow: 0 0 5px rgba(255, 69, 0, 0.7); }
             50% { text-shadow: 0 0 15px rgba(255, 69, 0, 0.9); }
             100% { text-shadow: 0 0 5px rgba(255, 69, 0, 0.7); }
         }
-        
+
         .version-list {
             display: flex;
             flex-direction: column;
@@ -938,7 +974,7 @@
             overflow-y: auto;
             padding-right: 10px;
         }
-        
+
         .version-item {
             background: rgba(30, 30, 50, 0.5);
             padding: 12px;
@@ -948,88 +984,88 @@
             opacity: 0;
             transform: translateX(-20px);
         }
-        
+
         @keyframes versionItem {
             to { opacity: 1; transform: translateX(0); }
         }
-        
+
         .version-number {
             font-weight: bold;
             color: #ffcc00;
             margin-bottom: 5px;
         }
-        
+
         .version-description {
             color: #ddd;
             font-size: 0.9rem;
         }
-        
+
         /* 响应式设计 */
         @media (max-width: 900px) {
             .game-wrapper {
                 flex-direction: column;
                 align-items: center;
             }
-            
+
             .board {
                 grid-template-columns: repeat(15, 20px);
                 grid-template-rows: repeat(15, 20px);
             }
-            
+
             .cell {
                 width: 20px;
                 height: 20px;
             }
-            
+
             .stone {
                 width: 18px;
                 height: 18px;
             }
-            
+
             h1 {
                 font-size: 2.5rem;
             }
         }
-        
+
         @media (max-width: 600px) {
             .difficulty-buttons {
                 flex-direction: column;
             }
-            
+
             .difficulty-btn {
                 flex: 1;
                 min-width: 100%;
             }
-            
+
             .model-buttons {
                 flex-direction: column;
             }
         }
-        
+
         @media (max-width: 480px) {
             .container {
                 padding: 15px;
             }
-            
+
             .panel {
                 min-width: 280px;
                 padding: 15px;
             }
-            
+
             .mode-buttons {
                 flex-direction: column;
             }
-            
+
             .player-icon {
                 width: 40px;
                 height: 40px;
                 font-size: 24px;
             }
-            
+
             .status {
                 font-size: 1.2rem;
             }
-            
+
             .egg-message {
                 font-size: 1.1rem;
             }
@@ -1037,6 +1073,11 @@
     </style>
 </head>
 <body>
+    <!-- 新增：给作者买水按钮 -->
+    <button class="support-btn" onclick="window.open('https://space.coze.cn/s/Uv4lHTqkf8s/?width_height=1600x1291','_blank')">
+        <i class="fas fa-wine-bottle"></i> 给作者买瓶矿泉水
+    </button>
+
     <div class="container">
         <div class="bg-pattern"></div>
         <div class="hell-fire"></div>
@@ -1572,50 +1613,6 @@
                 return bestMove || moves[0];
             }
             
-            // Minimax算法（带Alpha-Beta剪枝）
-            function minimaxAlphaBeta(depth, alpha, beta, isMaximizing, startTime, timeLimit) {
-                // 检查是否超时
-                if (Date.now() - startTime > timeLimit) {
-                    return isMaximizing ? -Infinity : Infinity;
-                }
-                
-                // 检查游戏是否结束
-                const winner = checkBoardWin();
-                if (winner !== 0 || depth === 0) {
-                    return evaluateBoardUltimate();
-                }
-                
-                if (isMaximizing) {
-                    let maxEval = -Infinity;
-                    const moves = generateMovesUltimate();
-                    
-                    for (const move of moves) {
-                        gameState.board[move.row][move.col] = 2; // AI下子
-                        const eval = minimaxAlphaBeta(depth - 1, alpha, beta, false, startTime, timeLimit);
-                        gameState.board[move.row][move.col] = 0; // 撤销下子
-                        
-                        maxEval = Math.max(maxEval, eval);
-                        alpha = Math.max(alpha, eval);
-                        if (beta <= alpha) break;
-                    }
-                    return maxEval;
-                } else {
-                    let minEval = Infinity;
-                    const moves = generateMovesUltimate();
-                    
-                    for (const move of moves) {
-                        gameState.board[move.row][move.col] = 1; // 玩家下子
-                        const eval = minimaxAlphaBeta(depth - 1, alpha, beta, true, startTime, timeLimit);
-                        gameState.board[move.row][move.col] = 0; // 撤销下子
-                        
-                        minEval = Math.min(minEval, eval);
-                        beta = Math.min(beta, eval);
-                        if (beta <= alpha) break;
-                    }
-                    return minEval;
-                }
-            }
-            
             // 检查整个棋盘是否有胜利者
             function checkBoardWin() {
                 for (let row = 0; row < 15; row++) {
@@ -1784,6 +1781,50 @@
                 }
                 
                 return score;
+            }
+            
+            // Minimax算法（带Alpha-Beta剪枝）
+            function minimaxAlphaBeta(depth, alpha, beta, isMaximizing, startTime, timeLimit) {
+                // 检查是否超时
+                if (Date.now() - startTime > timeLimit) {
+                    return isMaximizing ? -Infinity : Infinity;
+                }
+                
+                // 检查游戏是否结束
+                const winner = checkBoardWin();
+                if (winner !== 0 || depth === 0) {
+                    return evaluateBoardUltimate();
+                }
+                
+                if (isMaximizing) {
+                    let maxEval = -Infinity;
+                    const moves = generateMovesUltimate();
+                    
+                    for (const move of moves) {
+                        gameState.board[move.row][move.col] = 2; // AI下子
+                        const eval = minimaxAlphaBeta(depth - 1, alpha, beta, false, startTime, timeLimit);
+                        gameState.board[move.row][move.col] = 0; // 撤销下子
+                        
+                        maxEval = Math.max(maxEval, eval);
+                        alpha = Math.max(alpha, eval);
+                        if (beta <= alpha) break;
+                    }
+                    return maxEval;
+                } else {
+                    let minEval = Infinity;
+                    const moves = generateMovesUltimate();
+                    
+                    for (const move of moves) {
+                        gameState.board[move.row][move.col] = 1; // 玩家下子
+                        const eval = minimaxAlphaBeta(depth - 1, alpha, beta, true, startTime, timeLimit);
+                        gameState.board[move.row][move.col] = 0; // 撤销下子
+                        
+                        minEval = Math.min(minEval, eval);
+                        beta = Math.min(beta, eval);
+                        if (beta <= alpha) break;
+                    }
+                    return minEval;
+                }
             }
             
             // 检查胜利条件
@@ -2008,8 +2049,8 @@
             initBoard();
             initVersionHistory();
             updateStatus();
-            ultimatehellWarning.style.display = 'block'; // 默认显示万层地狱警告
-            modelSelection.style.display = 'block'; // 默认显示模型选择
+            ultimatehellWarning.style.display = 'block';
+            modelSelection.style.display = 'block';
             
             // 为AI算法提供占位实现
             function minimax() { return { move: getMediumAIMove() }; }
