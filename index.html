@@ -23,7 +23,6 @@
             overflow-x: hidden;
         }
 
-        /* 新增：给作者买水按钮样式 */
         .support-btn {
             position: fixed;
             top: 50%;
@@ -81,7 +80,6 @@
             100% { box-shadow: 0 0 30px rgba(255, 69, 0, 0.7); }
         }
 
-        /* 背景装饰 */
         .bg-pattern {
             position: absolute;
             top: 0;
@@ -240,7 +238,6 @@
             transform: translateX(-50%);
         }
 
-        /* 棋盘上的五个点 */
         .board-point {
             position: absolute;
             width: 8px;
@@ -1000,6 +997,161 @@
             font-size: 0.9rem;
         }
 
+        /* 段位系统样式 */
+        .rank-container {
+            background: rgba(0, 0, 0, 0.6);
+            border-radius: 15px;
+            padding: 25px;
+            min-width: 320px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.7);
+            border: 1px solid rgba(255, 69, 0, 0.5);
+            z-index: 2;
+            transition: transform 0.3s;
+            animation: panelFloat 5s infinite ease-in-out;
+            margin-top: 20px;
+        }
+
+        .rank-header {
+            text-align: center;
+            color: #ffcc00;
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            text-shadow: 0 0 5px rgba(255, 69, 0, 0.7);
+        }
+
+        .current-rank {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            padding: 15px;
+            background: rgba(30, 30, 50, 0.5);
+            border-radius: 12px;
+            border: 2px solid #ff9900;
+        }
+
+        .rank-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 40px;
+            box-shadow: 0 0 20px rgba(255, 153, 0, 0.5);
+            animation: rankGlow 2s infinite alternate;
+            background: linear-gradient(135deg, #ff9900, #ffcc00);
+            color: #1a1a2e;
+            font-weight: bold;
+        }
+
+        @keyframes rankGlow {
+            0% { box-shadow: 0 0 15px rgba(255, 153, 0, 0.5); }
+            100% { box-shadow: 0 0 30px rgba(255, 153, 0, 0.8); }
+        }
+
+        .rank-name {
+            font-size: 1.6rem;
+            font-weight: bold;
+            color: #ffcc00;
+            text-align: center;
+        }
+
+        .rank-points {
+            font-size: 1.2rem;
+            color: #fff;
+            text-align: center;
+        }
+
+        .rank-progress {
+            width: 100%;
+            height: 20px;
+            background: rgba(50, 50, 70, 0.7);
+            border-radius: 10px;
+            margin-top: 10px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(to right, #ff9900, #ffcc00);
+            border-radius: 10px;
+            transition: width 0.5s ease;
+        }
+
+        .progress-text {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-weight: bold;
+            font-size: 0.9rem;
+        }
+
+        .rank-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-top: 10px;
+            max-height: 200px;
+            overflow-y: auto;
+            padding: 5px;
+        }
+
+        .rank-item {
+            display: flex;
+            align-items: center;
+            padding: 8px;
+            background: rgba(40, 40, 60, 0.6);
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+
+        .rank-item.current {
+            background: rgba(255, 153, 0, 0.3);
+            border: 1px solid #ff9900;
+        }
+
+        .rank-item-icon {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-right: 10px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            background: rgba(255, 153, 0, 0.2);
+            color: #ffcc00;
+        }
+
+        .rank-item-name {
+            flex: 1;
+            font-size: 0.95rem;
+        }
+
+        .rank-item-points {
+            font-size: 0.9rem;
+            color: #ffcc00;
+            font-weight: bold;
+            min-width: 70px;
+            text-align: right;
+        }
+
         /* 响应式设计 */
         @media (max-width: 900px) {
             .game-wrapper {
@@ -1073,7 +1225,6 @@
     </style>
 </head>
 <body>
-    <!-- 新增：给作者买水按钮 -->
     <button class="support-btn" onclick="window.open('https://space.coze.cn/s/GFQgNtfn31Y/?width_height=863x863','_blank')">
         <i class="fas fa-wine-bottle"></i> 给作者买瓶矿泉水
     </button>
@@ -1140,7 +1291,6 @@
                         </ul>
                     </div>
                     
-                    <!-- 新增模型选择区域 -->
                     <div class="model-selection" id="modelSelection">
                         <div class="section-title">
                             <i class="fas fa-cogs"></i> AI模型
@@ -1211,6 +1361,28 @@
             </div>
         </div>
         
+        <!-- 段位系统容器 -->
+        <div class="rank-container">
+            <div class="rank-header">
+                <i class="fas fa-trophy"></i> 段位系统
+            </div>
+            
+            <div class="current-rank">
+                <div class="rank-icon" id="currentRankIcon">1</div>
+                <div class="rank-name" id="currentRankName">初学者</div>
+                <div class="rank-points" id="currentRankPoints">积分: 0</div>
+                
+                <div class="rank-progress">
+                    <div class="progress-bar" id="rankProgressBar" style="width: 0%"></div>
+                    <div class="progress-text" id="rankProgressText">0%</div>
+                </div>
+            </div>
+            
+            <div class="rank-list" id="rankList">
+                <!-- 段位列表将通过JS动态生成 -->
+            </div>
+        </div>
+        
         <div class="version-history">
             <div class="version-title">
                 <i class="fas fa-history"></i> 版本更新记录
@@ -1266,7 +1438,27 @@
             const clickSound = document.getElementById('clickSound');
             const versionList = document.getElementById('versionList');
             
+            // 段位系统相关元素
+            const currentRankIcon = document.getElementById('currentRankIcon');
+            const currentRankName = document.getElementById('currentRankName');
+            const currentRankPoints = document.getElementById('currentRankPoints');
+            const rankProgressBar = document.getElementById('rankProgressBar');
+            const rankProgressText = document.getElementById('rankProgressText');
+            const rankList = document.getElementById('rankList');
+            
             let soundEnabled = true;
+            
+            // 段位系统配置
+            const rankSystem = [
+                { name: "初学者", icon: "1", min: 0, max: 100, color: "#6c757d" },
+                { name: "入门棋手", icon: "2", min: 101, max: 300, color: "#28a745" },
+                { name: "业余棋手", icon: "3", min: 301, max: 600, color: "#17a2b8" },
+                { name: "专业棋手", icon: "4", min: 601, max: 1000, color: "#007bff" },
+                { name: "棋坛高手", icon: "5", min: 1001, max: 1500, color: "#6610f2" },
+                { name: "棋坛大师", icon: "6", min: 1501, max: 2200, color: "#e83e8c" },
+                { name: "棋圣", icon: "7", min: 2201, max: 3000, color: "#fd7e14" },
+                { name: "棋神", icon: "★", min: 3001, max: Infinity, color: "#ffc107" }
+            ];
             
             // 游戏状态
             let gameState = {
@@ -1282,7 +1474,9 @@
                     aiWins: 0,
                     moves: 0,
                     maxDepth: 0
-                }
+                },
+                // 新增段位积分
+                eloRating: 0
             };
             
             // 版本历史数据
@@ -1298,8 +1492,115 @@
                 { version: "7.5", description: "万层地狱难度提升" },
                 { version: "8.0", description: "万层地狱添加满血版模型，用户可以选择正常版模型和满血版模型" },
                 { version: "9.0", description: "又一次修复bug，并添加大量动画效果" },
-                { version: "10.0", description: "万层地狱模式使用完整的Minimax算法，满血版使用迭代加深" }
+                { version: "10.0", description: "万层地狱模式使用完整的Minimax算法，满血版使用迭代加深" },
+                { version: "11.0", description: "新增段位系统，玩家积分永久保存" }
             ];
+            
+            // 初始化游戏
+            function initGame() {
+                // 尝试从localStorage加载积分
+                const savedElo = localStorage.getItem('gomokuEloRating');
+                if (savedElo) {
+                    gameState.eloRating = parseInt(savedElo);
+                }
+                
+                initBoard();
+                initVersionHistory();
+                initRankSystem();
+                updateRankDisplay();
+                updateStatus();
+                ultimatehellWarning.style.display = 'block';
+                modelSelection.style.display = 'block';
+            }
+            
+            // 初始化段位系统
+            function initRankSystem() {
+                // 生成段位列表
+                rankList.innerHTML = '';
+                rankSystem.forEach(rank => {
+                    const rankItem = document.createElement('div');
+                    rankItem.className = 'rank-item';
+                    
+                    // 检查是否是当前段位
+                    if (gameState.eloRating >= rank.min && gameState.eloRating <= rank.max) {
+                        rankItem.classList.add('current');
+                    }
+                    
+                    rankItem.innerHTML = `
+                        <div class="rank-item-icon" style="background: ${rank.color}">${rank.icon}</div>
+                        <div class="rank-item-name">${rank.name}</div>
+                        <div class="rank-item-points">${rank.min} - ${rank.max === Infinity ? '∞' : rank.max}分</div>
+                    `;
+                    rankList.appendChild(rankItem);
+                });
+            }
+            
+            // 更新段位显示
+            function updateRankDisplay() {
+                // 查找当前段位
+                const currentRank = rankSystem.find(rank => 
+                    gameState.eloRating >= rank.min && gameState.eloRating <= rank.max
+                ) || rankSystem[0];
+                
+                // 更新显示
+                currentRankIcon.textContent = currentRank.icon;
+                currentRankName.textContent = currentRank.name;
+                currentRankIcon.style.background = `linear-gradient(135deg, ${currentRank.color}, #ffcc00)`;
+                currentRankPoints.textContent = `积分: ${gameState.eloRating}`;
+                
+                // 计算进度条
+                const progress = Math.min(100, Math.max(0, 
+                    ((gameState.eloRating - currentRank.min) / (currentRank.max - currentRank.min)) * 100
+                ));
+                
+                rankProgressBar.style.width = `${progress}%`;
+                rankProgressText.textContent = `${Math.round(progress)}%`;
+                
+                // 更新段位列表中的当前段位高亮
+                document.querySelectorAll('.rank-item').forEach((item, index) => {
+                    if (index === rankSystem.indexOf(currentRank)) {
+                        item.classList.add('current');
+                    } else {
+                        item.classList.remove('current');
+                    }
+                });
+            }
+            
+            // 保存积分到localStorage
+            function saveEloRating() {
+                localStorage.setItem('gomokuEloRating', gameState.eloRating.toString());
+            }
+            
+            // 根据胜利增加积分
+            function addEloPoints() {
+                let points = 0;
+                
+                // 根据难度给予不同积分
+                switch (gameState.difficulty) {
+                    case 'easy':
+                        points = 10;
+                        break;
+                    case 'medium':
+                        points = 30;
+                        break;
+                    case 'hard':
+                        points = 50;
+                        break;
+                    case 'hell':
+                        points = 100;
+                        break;
+                    case 'ultimatehell':
+                        points = gameState.model === 'fullpower' ? 300 : 200;
+                        break;
+                }
+                
+                gameState.eloRating += points;
+                saveEloRating();
+                updateRankDisplay();
+                
+                // 显示获得积分提示
+                eggMessage.textContent += ` 获得${points}积分！`;
+            }
             
             // 初始化版本历史
             function initVersionHistory() {
@@ -1900,6 +2201,9 @@
                     if (player === 1) { // 玩家赢了
                         winnerName = "你赢了!";
                         eggText = "这怎么可能，这可是谢子涵自研AI";
+                        
+                        // 玩家胜利增加积分
+                        addEloPoints();
                     } else { // AI赢了
                         winnerName = "AI赢了!";
                         eggText = "我就知道，这可是谢子涵自研AI";
@@ -2045,16 +2349,12 @@
                 playSound(clickSound);
             });
             
-            // 初始化游戏
-            initBoard();
-            initVersionHistory();
-            updateStatus();
-            ultimatehellWarning.style.display = 'block';
-            modelSelection.style.display = 'block';
-            
             // 为AI算法提供占位实现
             function minimax() { return { move: getMediumAIMove() }; }
             function enhancedMinimax() { return { move: getHellAIMove() }; }
+            
+            // 初始化游戏
+            initGame();
         });
     </script>
 </body>
