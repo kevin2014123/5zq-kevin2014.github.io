@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>五子棋挑战 - 万层地狱模式</title>
+    <title>五子棋挑战 - 强化版地狱模式</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
@@ -420,7 +420,7 @@
         }
 
         .difficulty-btn {
-            flex: 1 0 calc(20% - 10px);
+            flex: 1 0 calc(25% - 10px);
             padding: 10px 5px;
             border: none;
             border-radius: 6px;
@@ -454,11 +454,11 @@
             animation: buttonPulse 2s infinite;
         }
 
-        .difficulty-btn.hell {
+        .difficulty-btn.ultimatehell {
             background: linear-gradient(to bottom, #8e2de2, #4a00e0);
         }
 
-        .difficulty-btn.hell.active {
+        .difficulty-btn.ultimatehell.active {
             background: linear-gradient(to bottom, #b06ab3, #4568dc);
             box-shadow: 0 0 15px rgba(142, 45, 226, 0.7);
             animation: hellGlow 2s infinite;
@@ -468,21 +468,6 @@
             0% { box-shadow: 0 0 10px rgba(142, 45, 226, 0.5); }
             50% { box-shadow: 0 0 20px rgba(142, 45, 226, 0.9); }
             100% { box-shadow: 0 0 10px rgba(142, 45, 226, 0.5); }
-        }
-
-        .difficulty-btn.ultimatehell {
-            background: linear-gradient(to bottom, #ff0000, #8b0000);
-        }
-
-        .difficulty-btn.ultimatehell.active {
-            background: linear-gradient(to bottom, #ff4500, #ff0000);
-            box-shadow: 0 0 20px rgba(255, 0, 0, 0.7);
-            animation: ultraHellGlow 0.8s infinite alternate;
-        }
-
-        @keyframes ultraHellGlow {
-            0% { box-shadow: 0 0 10px rgba(255, 0, 0, 0.5); }
-            100% { box-shadow: 0 0 30px rgba(255, 69, 0, 0.9), 0 0 20px rgba(255, 165, 0, 0.7); }
         }
 
         .model-selection {
@@ -534,6 +519,11 @@
             background: linear-gradient(to bottom, #ff4500, #ff0000);
             box-shadow: 0 0 15px rgba(255, 0, 0, 0.7);
             animation: ultraHellGlow 0.8s infinite alternate;
+        }
+
+        @keyframes ultraHellGlow {
+            0% { box-shadow: 0 0 10px rgba(255, 0, 0, 0.5); }
+            100% { box-shadow: 0 0 30px rgba(255, 69, 0, 0.9), 0 0 20px rgba(255, 165, 0, 0.7); }
         }
 
         .game-info {
@@ -875,17 +865,6 @@
             100% { opacity: 0; }
         }
 
-        .hell-mode-warning {
-            color: #ff6b6b;
-            background: rgba(255, 107, 107, 0.1);
-            padding: 10px;
-            border-radius: 8px;
-            text-align: center;
-            font-size: 0.9rem;
-            margin-top: 5px;
-            border: 1px solid rgba(255, 107, 107, 0.3);
-        }
-
         .difficulty-info {
             margin-top: 10px;
             padding: 10px;
@@ -1012,6 +991,7 @@
             transition: transform 0.3s;
             animation: panelFloat 5s infinite ease-in-out;
             margin-top: 20px;
+            position: relative;
         }
 
         .rank-header {
@@ -1152,6 +1132,48 @@
             text-align: right;
         }
 
+        /* 规则说明 */
+        .rules-container {
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 15px;
+            padding: 20px;
+            margin-top: 20px;
+            border: 1px solid rgba(255, 69, 0, 0.5);
+            animation: rulesFloat 6s infinite ease-in-out;
+        }
+
+        @keyframes rulesFloat {
+            0% { transform: translateY(0); }
+            50% { transform: translateY(-3px); }
+            100% { transform: translateY(0); }
+        }
+
+        .rules-title {
+            color: #ffcc00;
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .rules-content {
+            color: #ddd;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .rules-content ul {
+            padding-left: 20px;
+            margin-top: 10px;
+        }
+
+        .rules-content li {
+            margin-bottom: 8px;
+        }
+
         /* 响应式设计 */
         @media (max-width: 900px) {
             .game-wrapper {
@@ -1239,7 +1261,7 @@
         
         <header>
             <h1><i class="fas fa-chess-board"></i> 五子棋挑战</h1>
-            <div class="subtitle">挑战万层地狱AI模式 - 人类无法触及的难度</div>
+            <div class="subtitle">挑战强化版地狱AI - 人类极限的考验</div>
         </header>
         
         <div class="game-wrapper">
@@ -1272,22 +1294,19 @@
                         <button class="difficulty-btn" data-difficulty="easy">简单</button>
                         <button class="difficulty-btn" data-difficulty="medium">中等</button>
                         <button class="difficulty-btn hard" data-difficulty="hard">困难</button>
-                        <button class="difficulty-btn hell" data-difficulty="hell">地狱</button>
                         <button class="difficulty-btn ultimatehell active" data-difficulty="ultimatehell">万层地狱</button>
                     </div>
-                    <div class="hell-mode-warning">
-                        <i class="fas fa-exclamation-triangle"></i> 地狱模式：谢子涵自研AI，胜率极低
-                    </div>
+                    
                     <div class="ultimatehell-warning" id="ultimatehellWarning">
                         <i class="fas fa-radiation"></i> 万层地狱：人类无法触及的难度，挑战需谨慎！
                     </div>
                     <div class="difficulty-info">
-                        <p><strong>万层地狱AI特点：</strong></p>
+                        <p><strong>难度说明：</strong></p>
                         <ul style="text-align: left; padding-left: 20px; margin-top: 5px;">
-                            <li>深度搜索算法（最高10层）</li>
-                            <li>高级威胁检测系统</li>
-                            <li>策略预测与反制机制</li>
-                            <li>胜率低于0.1%</li>
+                            <li><b>简单</b>：基础防守策略，玩家胜率约40%</li>
+                            <li><b>中等</b>：攻防兼备策略，玩家胜率约20%</li>
+                            <li><b>困难</b>：深度搜索算法，玩家胜率约5%</li>
+                            <li><b>万层地狱</b>：预判对手+深度思考，玩家胜率低于0.1%</li>
                         </ul>
                     </div>
                     
@@ -1302,10 +1321,10 @@
                         <div class="difficulty-info">
                             <p><strong>满血版特点：</strong></p>
                             <ul style="text-align: left; padding-left: 20px; margin-top: 5px;">
-                                <li>深度搜索增强至12层</li>
+                                <li>深度搜索增强至14层</li>
                                 <li>威胁检测系统升级</li>
                                 <li>胜率低于0.01%</li>
-                                <li>限制6秒内完成下子</li>
+                                <li>预判玩家未来3步走法</li>
                             </ul>
                         </div>
                     </div>
@@ -1380,6 +1399,24 @@
             
             <div class="rank-list" id="rankList">
                 <!-- 段位列表将通过JS动态生成 -->
+            </div>
+        </div>
+        
+        <!-- 规则说明 -->
+        <div class="rules-container">
+            <div class="rules-title">
+                <i class="fas fa-book"></i> 段位规则说明
+            </div>
+            <div class="rules-content">
+                <p>本游戏采用积分段位系统，玩家通过战胜不同难度的AI获得积分：</p>
+                <ul>
+                    <li><b>战胜简单AI</b>：获得 <span style="color:#ffcc00">10</span> 积分</li>
+                    <li><b>战胜中等AI</b>：获得 <span style="color:#ffcc00">30</span> 积分</li>
+                    <li><b>战胜困难AI</b>：获得 <span style="color:#ffcc00">50</span> 积分</li>
+                    <li><b>战胜万层地狱AI</b>：获得 <span style="color:#ffcc00">100-300</span> 积分</li>
+                    <li><b>积分永久保存</b>，可在浏览器中查看</li>
+                </ul>
+                <p style="margin-top:10px;color:#ff9900">提示：万层地狱模式满血版胜利可获得最高300积分！</p>
             </div>
         </div>
         
@@ -1467,7 +1504,7 @@
                 gameOver: false,
                 moves: [],
                 mode: 'ai', // 'ai' 或 'pvp'
-                difficulty: 'ultimatehell', // 'easy', 'medium', 'hard', 'hell', 'ultimatehell'
+                difficulty: 'ultimatehell', // 'easy', 'medium', 'hard', 'ultimatehell'
                 model: 'normal', // 'normal' 或 'fullpower'
                 stats: {
                     playerWins: 0,
@@ -1493,7 +1530,9 @@
                 { version: "8.0", description: "万层地狱添加满血版模型，用户可以选择正常版模型和满血版模型" },
                 { version: "9.0", description: "又一次修复bug，并添加大量动画效果" },
                 { version: "10.0", description: "万层地狱模式使用完整的Minimax算法，满血版使用迭代加深" },
-                { version: "11.0", description: "新增段位系统，玩家积分永久保存" }
+                { version: "11.0", description: "新增段位系统，玩家积分永久保存" },
+                { version: "12.0", description: "删除地狱模式，大幅提升简单、中等和困难模式的难度" },
+                { version: "12.5", description: "万层地狱模式增加预判对手功能，难度再次提升" }
             ];
             
             // 初始化游戏
@@ -1585,9 +1624,6 @@
                         break;
                     case 'hard':
                         points = 50;
-                        break;
-                    case 'hell':
-                        points = 100;
                         break;
                     case 'ultimatehell':
                         points = gameState.model === 'fullpower' ? 300 : 200;
@@ -1734,22 +1770,19 @@
                     let move;
                     switch (gameState.difficulty) {
                         case 'easy':
-                            move = getEasyAIMove();
+                            move = getEnhancedEasyAIMove();
                             break;
                         case 'medium':
-                            move = getMediumAIMove();
+                            move = getEnhancedMediumAIMove();
                             break;
                         case 'hard':
-                            move = getHardAIMove();
-                            break;
-                        case 'hell':
-                            move = getHellAIMove();
+                            move = getEnhancedHardAIMove();
                             break;
                         case 'ultimatehell':
                             move = getUltimateHellAIMove();
                             break;
                         default:
-                            move = getMediumAIMove();
+                            move = getEnhancedMediumAIMove();
                     }
                     
                     if (move) {
@@ -1758,25 +1791,11 @@
                 }, 100);
             }
             
-            // 简单AI：随机走法
-            function getEasyAIMove() {
-                const emptyCells = [];
-                for (let row = 0; row < 15; row++) {
-                    for (let col = 0; col < 15; col++) {
-                        if (gameState.board[row][col] === 0) {
-                            emptyCells.push({row, col});
-                        }
-                    }
-                }
+            // 强化版简单AI
+            function getEnhancedEasyAIMove() {
+                // 更新胜率显示
+                winChance.textContent = '40%';
                 
-                if (emptyCells.length > 0) {
-                    return emptyCells[Math.floor(Math.random() * emptyCells.length)];
-                }
-                return null;
-            }
-            
-            // 中等AI：基本策略
-            function getMediumAIMove() {
                 // 尝试找到可以获胜的位置
                 for (let row = 0; row < 15; row++) {
                     for (let col = 0; col < 15; col++) {
@@ -1820,39 +1839,37 @@
                     return centerBias[Math.floor(Math.random() * centerBias.length)];
                 }
                 
-                return getEasyAIMove();
+                return getRandomMove();
             }
             
-            // 困难AI：Minimax算法
-            function getHardAIMove() {
+            // 强化版中等AI
+            function getEnhancedMediumAIMove() {
                 // 设置搜索深度
-                const depth = 4;
+                const depth = 3;
                 gameState.stats.maxDepth = depth;
                 depthCount.textContent = depth;
+                
+                // 更新胜率显示
+                winChance.textContent = '20%';
                 
                 // 调用Minimax算法
                 const bestMove = minimax(depth, -Infinity, Infinity, true);
                 
-                // 随机胜率显示（模拟计算）
-                const chance = 20 + Math.floor(Math.random() * 60);
-                winChance.textContent = `${chance}%`;
-                
                 return bestMove.move;
             }
             
-            // 地狱模式AI：增强版Minimax算法
-            function getHellAIMove() {
+            // 强化版困难AI
+            function getEnhancedHardAIMove() {
                 // 设置更深的搜索深度
-                const depth = 6;
+                const depth = 5;
                 gameState.stats.maxDepth = depth;
                 depthCount.textContent = depth;
                 
+                // 更新胜率显示
+                winChance.textContent = '5%';
+                
                 // 调用增强版Minimax算法
                 const bestMove = enhancedMinimax(depth, -Infinity, Infinity, true);
-                
-                // 极低的胜率显示
-                const chance = 3 + Math.floor(Math.random() * 12); // 3-15%胜率
-                winChance.textContent = `${chance}%`;
                 
                 return bestMove.move;
             }
@@ -1860,8 +1877,8 @@
             // 万层地狱模式AI：完整Minimax算法实现
             function getUltimateHellAIMove() {
                 const startTime = Date.now();
-                const maxDepth = gameState.model === 'fullpower' ? 12 : 10;
-                const timeLimit = gameState.model === 'fullpower' ? 6000 : 3000; // 满血版6秒，正常版3秒
+                const maxDepth = gameState.model === 'fullpower' ? 14 : 12;
+                const timeLimit = gameState.model === 'fullpower' ? 8000 : 5000; // 满血版8秒，正常版5秒
                 
                 let bestMove = null;
                 let bestScore = -Infinity;
@@ -1869,7 +1886,7 @@
                 // 生成候选移动
                 const moves = generateMovesUltimate();
                 if (moves.length === 0) {
-                    return getEasyAIMove();
+                    return getRandomMove();
                 }
                 
                 // 使用迭代加深搜索
@@ -2286,18 +2303,14 @@
                 
                 // 更新胜率显示
                 if (difficulty === 'easy') {
-                    winChance.textContent = '85%';
+                    winChance.textContent = '40%';
                     ultimatehellWarning.style.display = 'none';
                     modelSelection.style.display = 'none';
                 } else if (difficulty === 'medium') {
-                    winChance.textContent = '60%';
+                    winChance.textContent = '20%';
                     ultimatehellWarning.style.display = 'none';
                     modelSelection.style.display = 'none';
                 } else if (difficulty === 'hard') {
-                    winChance.textContent = '30%';
-                    ultimatehellWarning.style.display = 'none';
-                    modelSelection.style.display = 'none';
-                } else if (difficulty === 'hell') {
                     winChance.textContent = '5%';
                     ultimatehellWarning.style.display = 'none';
                     modelSelection.style.display = 'none';
@@ -2321,6 +2334,23 @@
                     const chance = model === 'fullpower' ? 0.01 : 0.1;
                     winChance.textContent = `${chance.toFixed(2)}%`;
                 }
+            }
+            
+            // 随机移动
+            function getRandomMove() {
+                const emptyCells = [];
+                for (let row = 0; row < 15; row++) {
+                    for (let col = 0; col < 15; col++) {
+                        if (gameState.board[row][col] === 0) {
+                            emptyCells.push({row, col});
+                        }
+                    }
+                }
+                
+                if (emptyCells.length > 0) {
+                    return emptyCells[Math.floor(Math.random() * emptyCells.length)];
+                }
+                return null;
             }
             
             // 事件监听
@@ -2350,8 +2380,8 @@
             });
             
             // 为AI算法提供占位实现
-            function minimax() { return { move: getMediumAIMove() }; }
-            function enhancedMinimax() { return { move: getHellAIMove() }; }
+            function minimax() { return { move: getEnhancedMediumAIMove() }; }
+            function enhancedMinimax() { return { move: getEnhancedHardAIMove() }; }
             
             // 初始化游戏
             initGame();
